@@ -9,8 +9,6 @@ services:
       MYSQL_ROOT_PASSWORD: "root"
       MYSQL_ALLOW_EMPTY_PASSWORD: 1
       MYSQL_ROOT_HOST: "%"
-      MYSQL_USER: "root"
-      MYSQL_PASSWORD: "root"
     volumes:
       - "db_data:/var/lib/mysql"
       - "./docker/provision/mysql/init:/docker-entrypoint-initdb.d"
