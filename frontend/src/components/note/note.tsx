@@ -26,7 +26,7 @@ const Note = (props: Props) => {
             title="Card title"
             description="This is the description"
           />
-          Content
+          <div className="mt-2">Content</div>
         </Card>
       </Link>
     </>
