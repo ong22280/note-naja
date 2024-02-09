@@ -1,17 +1,12 @@
 import express from "express";
-import {
-  signupUser,
-  authenticateUser,
-  logoutUser,
-} from "../controllers/authController";
-
-import upload from "../middleware/multerMiddleware";
-
+import * as authController from "../controllers/authController";
 
 const router = express.Router();
 
-router.post("/signup",upload.single('avatar'), signupUser);
-router.post("/login", authenticateUser);
-router.post("/logout", logoutUser);
+router.post("/signup", authController.signupUser);
+
+router.post("/login", authController.authenticateUser);
+
+router.post("/logout", authController.logoutUser);
 
 export default router;

@@ -6,6 +6,10 @@ import bodyParser from "body-parser";
 import userRouter from "./routes/userRouter";
 import { authenticate } from "./middleware/authMiddleware";
 import { errorHandler } from "./middleware/errorMiddleware";
+import categoryRouter from "./routes/categoryRouter";
+import logRouter from "./routes/logRouter";
+import noteRouter from "./routes/noteRouter";
+import tagRouter from "./routes/tagRouter";
 
 dotenv.config();
 
@@ -42,5 +46,9 @@ app.listen(port, () => {
 
 app.use(authRouter);
 app.use("/users", authenticate, userRouter);
+app.use("/categories", authenticate, categoryRouter);
+app.use("/logs", authenticate, logRouter);
+app.use("/notes", authenticate, noteRouter);
+app.use("/tags", authenticate, tagRouter);
 
 app.use(errorHandler);
