@@ -10,7 +10,7 @@ import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
-const registerUser = asyncHandler(
+const signupUser = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {
     const { name, email, password } = req.body;
     try {
@@ -65,4 +65,4 @@ const logoutUser = asyncHandler(async (req: Request, res: Response) => {
   res.status(200).json({ message: "Successfully logged out" });
 });
 
-export { registerUser, authenticateUser, logoutUser };
+export { signupUser, authenticateUser, logoutUser };
