@@ -17,7 +17,7 @@ const Home = () => {
     try {
       const actionResult = await dispatch(logout()).unwrap();
       if (logout.fulfilled.match(actionResult)) {
-        return navigate.push("/login");
+        return navigate.push("/log-in");
       } else if (logout.rejected.match(actionResult)) {
         dispatch(
           showNotification({

@@ -12,7 +12,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (!userInfo.token) {
-      router.push("/login");
+      router.push("/log-in");
     }
     setLoading(false);
   }, [userInfo.token, router]);

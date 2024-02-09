@@ -37,11 +37,11 @@ export const login = createAsyncThunk(
   }
 );
 
-export const register = createAsyncThunk(
-  "auth/register",
+export const signup = createAsyncThunk(
+  "auth/sign-up",
   async (data: NewUser, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post("/register", data);
+      const response = await axiosInstance.post("/signup", data);
       const resData = response.data;
       return resData;
     } catch (error) {
@@ -112,14 +112,14 @@ const authSlice = createSlice({
         }
       })
 
-      .addCase(register.pending, (state) => {
+      .addCase(signup.pending, (state) => {
         state.status = "loading";
         state.error = null;
       })
-      .addCase(register.fulfilled, (state, action: PayloadAction<string>) => {
+      .addCase(signup.fulfilled, (state, action: PayloadAction<string>) => {
         state.status = "idle";
       })
-      .addCase(register.rejected, (state, action) => {
+      .addCase(signup.rejected, (state, action) => {
         state.status = "failed";
         if (action.payload) {
           state.error =

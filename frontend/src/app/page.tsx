@@ -1,16 +1,14 @@
-import Link from "next/link";
+import HeroSection from "@/components/HeroSection";
+import Navbar from "@/components/Navbar";
 import React from "react";
 
-type Props = {};
-
-const Home = (props: Props) => {
+function LandingPage() {
   return (
     <>
-      <div>Home</div>
-      <Link href="/login">Login</Link>
-      <Link href="/register">Register</Link>
+      <Navbar />
+      <HeroSection />
     </>
   );
-};
+}
 
-export default Home;
+export default LandingPage;
