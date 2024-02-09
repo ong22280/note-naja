@@ -1,14 +1,24 @@
+"use client"
+
 import { Button, Timeline } from "antd";
+import Link from "next/link";
 import React from "react";
 
-type Props = {};
+type Props = {
+  params: { note_id: string };
+
+};
 
 const Note = (props: Props) => {
+  const note_id = props.params.note_id;
+  
   return (
     <>
       <div className="flex justify-between">
         <h2>Title</h2>
-        <Button type="primary">Edit</Button>
+        <Button type="primary">
+          <Link href={`/home/note/${note_id}/edit`}>Edit</Link>
+        </Button>
       </div>
       <p>by ...</p>
       <p>Update Date: {`{update_date}`}</p>
@@ -17,22 +27,15 @@ const Note = (props: Props) => {
       <div className="grid grid-cols-12 gap-4">
         <div className="col-span-8">{`{content}`}</div>
         <div className="col-span-4">
-          <Timeline
-            items={[
-              {
-                children: "Create a services site 2015-09-01",
-              },
-              {
-                children: "Solve initial network problems 2015-09-01",
-              },
-              {
-                children: "Technical testing 2015-09-01",
-              },
-              {
-                children: "Network problems being solved 2015-09-01",
-              },
-            ]}
-          />
+          <Timeline>
+            {["2015-09-01", "2015-09-02", "2015-09-03", "2015-09-04"].map(
+              (date, index) => (
+                <Timeline.Item key={index}>
+                  <Link href={`${note_id}/history/${date}`}>{date}</Link>
+                </Timeline.Item>
+              )
+            )}
+          </Timeline>
         </div>
       </div>
     </>

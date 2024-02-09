@@ -17,9 +17,9 @@ const Home = (props: Props) => {
       {/* Head */}
       <div className="flex justify-between">
         <div className="flex flex-col gap-2 w-1/2">
-          <h2 className="text-2xl font-bold mb-2">Dashboard</h2>
+          <h2 className="text-2xl font-bold mb-2">Notes</h2>
           <p className="text-gray-500">
-            Welcome to the dashboard. You can manage your notes here.
+            explore all notes created by you and other users.
           </p>
         </div>
         <div>
@@ -54,7 +54,7 @@ const Home = (props: Props) => {
         {/* Sort */}
         <div>
           <Select
-            defaultValue="lucy"
+            defaultValue="newest"
             style={{ width: 120 }}
             onChange={handleChange}
             options={[
