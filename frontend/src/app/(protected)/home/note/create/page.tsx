@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Button, Form, Input, Select } from "antd";
+import { Button, Form, Input, Select, SelectProps } from "antd";
 import dynamic from "next/dynamic";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux-hooks";
 import { authSelector } from "@/store/slices/authSlice";
@@ -10,7 +10,11 @@ import { showNotification } from "@/store/slices/notificationSlice";
 import { NotificationType } from "@/types/notificationType";
 import { useRouter } from "next/navigation";
 import { CategoryEnumType } from "@/types/categoryTypes";
+import { tagSelector, getAllTags } from "@/store/slices/tagSlice";
+import { TagType } from "@/types/tagTypes";
 const { Option } = Select;
+
+const options: SelectProps["options"] = [];
 
 const RichTextEditor = dynamic(() => import("@/components/rich-text-editor"), {
   ssr: false,
@@ -26,20 +30,44 @@ type FieldType = {
 type Props = {};
 
 const CreateNote = (props: Props) => {
+
+  // --- Redux ---
   const authReducer = useAppSelector(authSelector);
   const noteReducer = useAppSelector(noteSelector);
-
+  const tagReducer = useAppSelector(tagSelector);
   const dispatch = useAppDispatch();
 
   const navigate = useRouter();
 
-  const [userTags, setUserTags] = useState<string[]>([]);
-  const handleTagInputChange = (value: string) => {
+  // --- Tags ---
+  const [userTags, setUserTags] = useState<TagType[]>([]);
+  const handleTagInputChange = (value: TagType) => {
     setUserTags([...userTags, value]);
   };
 
   // --- Fetch Tags ---
+  useEffect(() => {
+    // dispatch(getAllTags());
+    if (tagReducer.status === "idle") {
+      const fetchTags = async () => {
+        await dispatch(getAllTags());
+      };
+      fetchTags();
+    }
+    if (tagReducer.tags) {
+      console.log("tagReducer.tags", tagReducer.tags);
 
+      // set initTags to options
+      for (let i = 0; i < tagReducer.tags.length; i++) {
+        options.push({ value: tagReducer.tags[i].name, label: tagReducer.tags[i].name });
+      }
+
+      // setInitTags(initTags);
+    }
+  }, []);
+
+  console.log("tagReducer", tagReducer);
+  console.log("userTags", userTags);
 
   const onFinish = async (values: FieldType) => {
     try {
@@ -70,8 +98,6 @@ const CreateNote = (props: Props) => {
       console.error(e);
     }
   };
-
-
 
   return (
     <>
@@ -111,14 +137,15 @@ const CreateNote = (props: Props) => {
             mode="tags"
             style={{ width: "100%" }}
             placeholder="Tags Mode"
+            options={options}
             onChange={handleTagInputChange}
             value={
               userTags.length > 0 ? userTags[userTags.length - 1] : undefined
             }
           >
             {userTags.map((tag, index) => (
-              <Option key={index} value={tag}>
-                {tag}
+              <Option key={index} value={tag.name}>
+                {tag.name}
               </Option>
             ))}
           </Select>
