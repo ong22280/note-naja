@@ -4,9 +4,9 @@ import asyncHandler from "express-async-handler";
 import * as LogModel from "../services/logService";
 
 const createLog = asyncHandler(async (req: Request, res: Response) => {
-  const { content, noteId } = req.body;
+  const { title, content, noteId } = req.body;
 
-  const log = await LogModel.createLog(content, noteId);
+  const log = await LogModel.createLog(title, content, noteId);
 
   res.status(201).json(log);
 });
@@ -31,9 +31,9 @@ const getLogById = asyncHandler(async (req: Request, res: Response) => {
 
 const updateLog = asyncHandler(async (req: Request, res: Response) => {
   const logId = parseInt(req.params.id);
-  const { content } = req.body;
+  const { title, content } = req.body;
 
-  const updatedLog = await LogModel.updateLog(logId, content);
+  const updatedLog = await LogModel.updateLog(logId, title, content);
 
   res.status(200).json(updatedLog);
 });

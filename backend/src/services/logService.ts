@@ -2,9 +2,14 @@ import { PrismaClient, Log } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-async function createLog(content: string, noteId: number): Promise<Log> {
+async function createLog(
+  title: string,
+  content: string,
+  noteId: number
+): Promise<Log> {
   const log = await prisma.log.create({
     data: {
+      title,
       content,
       noteId,
     },
@@ -29,12 +34,17 @@ async function getLogById(id: number): Promise<Log | null> {
   return log;
 }
 
-async function updateLog(id: number, content: string): Promise<Log | null> {
+async function updateLog(
+  id: number,
+  title: string,
+  content: string
+): Promise<Log | null> {
   const updatedLog = await prisma.log.update({
     where: {
       id,
     },
     data: {
+      title,
       content,
     },
   });
@@ -61,4 +71,11 @@ async function getNoteOfLog(id: number): Promise<Log | null> {
   return log;
 }
 
-export { createLog, getAllLogs, getLogById, updateLog, deleteLog, getNoteOfLog };
+export {
+  createLog,
+  getAllLogs,
+  getLogById,
+  updateLog,
+  deleteLog,
+  getNoteOfLog,
+};

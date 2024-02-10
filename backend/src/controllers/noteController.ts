@@ -4,15 +4,20 @@ import asyncHandler from "express-async-handler";
 import * as NoteModel from "../services/noteService"; // เรียกใช้ noteModel.ts ที่เราสร้างขึ้นมา
 
 const createNote = asyncHandler(async (req: Request, res: Response) => {
-  const { content, userId, categoryId } = req.body;
+  const { title, content, userId, CategoryType, tags } = req.body;
 
-  const note = await NoteModel.createNote(content, userId, categoryId);
+  const note = await NoteModel.createNote(
+    title,
+    content,
+    userId,
+    CategoryType,
+    tags
+  );
 
   res.status(201).json(note);
 });
 
 const getAllNotes = asyncHandler(async (req: Request, res: Response) => {
-  
   const notes = await NoteModel.getAllNotes();
 
   res.status(200).json(notes);
@@ -32,9 +37,14 @@ const getNoteById = asyncHandler(async (req: Request, res: Response) => {
 
 const updateNote = asyncHandler(async (req: Request, res: Response) => {
   const noteId = parseInt(req.params.id);
-  const { content, categoryId } = req.body;
+  const { title, content, categoryId } = req.body;
 
-  const updatedNote = await NoteModel.updateNote(noteId, content, categoryId);
+  const updatedNote = await NoteModel.updateNote(
+    noteId,
+    title,
+    content,
+    categoryId
+  );
 
   res.status(200).json(updatedNote);
 });

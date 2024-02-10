@@ -1,17 +1,25 @@
-import { PrismaClient, Note } from "@prisma/client";
+import { PrismaClient, Note, CategoryType } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 async function createNote(
+  title: string,
   content: string,
   userId: number,
-  categoryId: number
+  category: CategoryType,
+  tags: string[]
 ): Promise<Note> {
   const note = await prisma.note.create({
     data: {
+      title,
       content,
       userId,
-      categoryId,
+      category,
+      tags: {
+        create: tags.map((name) => ({
+          name,
+        })),
+      },
     },
   });
   return note;
@@ -30,7 +38,6 @@ async function getNoteById(id: number): Promise<Note | null> {
     include: {
       user: true,
       logs: true,
-      category: true,
       tags: true,
     },
   });
@@ -39,16 +46,18 @@ async function getNoteById(id: number): Promise<Note | null> {
 
 async function updateNote(
   id: number,
+  title: string,
   content: string,
-  categoryId: number
+  category: CategoryType
 ): Promise<Note | null> {
   const updatedNote = await prisma.note.update({
     where: {
       id,
     },
     data: {
+      title,
       content,
-      categoryId,
+      category,
     },
   });
   return updatedNote;
@@ -61,53 +70,5 @@ async function deleteNote(id: number): Promise<void> {
     },
   });
 }
-
-// async function getUserOfNote(id: number): Promise<Note | null> {
-//   const note = await prisma.note.findUnique({
-//     where: {
-//       id,
-//     },
-//     include: {
-//       user: true,
-//     },
-//   });
-//   return note;
-// }
-
-// async function getLogsOfNote(id: number): Promise<Note | null> {
-//   const note = await prisma.note.findUnique({
-//     where: {
-//       id,
-//     },
-//     include: {
-//       logs: true,
-//     },
-//   });
-//   return note;
-// }
-
-// async function getCategoryOfNote(id: number): Promise<Note | null> {
-//   const note = await prisma.note.findUnique({
-//     where: {
-//       id,
-//     },
-//     include: {
-//       category: true,
-//     },
-//   });
-//   return note;
-// }
-
-// async function getTagsOfNote(id: number): Promise<Note | null> {
-//   const note = await prisma.note.findUnique({
-//     where: {
-//       id,
-//     },
-//     include: {
-//       tags: true,
-//     },
-//   });
-//   return note;
-// }
 
 export { createNote, getAllNotes, getNoteById, updateNote, deleteNote };
