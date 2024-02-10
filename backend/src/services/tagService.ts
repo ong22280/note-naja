@@ -3,12 +3,24 @@ import { PrismaClient, Tag } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function createTag(name: string): Promise<Tag> {
-  const tag = await prisma.tag.create({
-    data: {
+
+  // if tag already exists, return the tag
+  const tag = await prisma.tag.findUnique({
+    where: {
       name,
     },
   });
-  return tag;
+
+  if (tag) {
+    return tag;
+  } else {
+    const newTag = await prisma.tag.create({
+      data: {
+        name,
+      },
+    });
+    return newTag;
+  }
 }
 
 async function getAllTags(): Promise<Tag[]> {

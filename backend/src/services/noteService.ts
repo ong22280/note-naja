@@ -9,6 +9,9 @@ async function createNote(
   category: CategoryType,
   tags: string[]
 ): Promise<Note> {
+
+  // if tags is undefined, create note without tags
+  
   if (tags === undefined) {
     const note = await prisma.note.create({
       data: {
