@@ -9,7 +9,6 @@ async function createNote(
   category: CategoryType,
   tags: string[]
 ): Promise<Note> {
-
   // if tags is undefined, create note without tags
 
   if (tags === undefined) {
@@ -32,7 +31,6 @@ async function createNote(
     });
     return note;
   } else {
-
     // check if tag already exists, if not, create tag
     const existingTags = await prisma.tag.findMany({
       where: {
@@ -127,7 +125,6 @@ async function updateNote(
   category: CategoryType,
   tags: string[]
 ): Promise<Note | null> {
-
   // if tags is undefined, update note without tags
 
   if (tags === undefined) {
@@ -153,8 +150,31 @@ async function updateNote(
     });
 
     return updatedNote;
-  } else {
+  } else if (tags.length === 0) {
+    const updatedNote = await prisma.note.update({
+      where: {
+        id,
+      },
+      data: {
+        title,
+        content,
+        category,
+        tags: { set: [] },
+      },
+    });
 
+    // create log
+    await prisma.log.create({
+      data: {
+        title: title,
+        content: content,
+        noteId: id,
+        category: category,
+      },
+    });
+
+    return updatedNote;
+  } else {
     // check if tag already exists, if not, create tag
     const existingTags = await prisma.tag.findMany({
       where: {
