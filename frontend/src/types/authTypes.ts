@@ -9,9 +9,14 @@ type NewUser = User & {
 };
 
 type UserBasicInfo = {
-  id: string;
+  id: number;
+  avatar?: string | null;
   name: string;
   email: string;
+  password: string;
+  notes: Note[];
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 type AuthApiState = {

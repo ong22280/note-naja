@@ -5,6 +5,10 @@ import { Button, Form, Input, Select } from "antd";
 import dynamic from "next/dynamic";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux-hooks";
 import { authSelector } from "@/store/slices/authSlice";
+import { createNote } from "@/store/slices/noteSlice";
+import { showNotification } from "@/store/slices/notificationSlice";
+import { NotificationType } from "@/types/notificationType";
+import { useRouter } from "next/navigation";
 const { Option } = Select;
 
 const RichTextEditor = dynamic(() => import("@/components/rich-text-editor"), {
@@ -14,25 +18,54 @@ const RichTextEditor = dynamic(() => import("@/components/rich-text-editor"), {
 type FieldType = {
   title: string;
   content: string;
+  category: CategoryType;
+  tags: string[];
 };
 
 type Props = {};
 
 const CreateNote = (props: Props) => {
   const authReducer = useAppSelector(authSelector);
+  const dispatch = useAppDispatch();
+
+  const navigate = useRouter();
+
   const [userTags, setUserTags] = useState<string[]>([]);
   const handleTagInputChange = (value: string) => {
     setUserTags([...userTags, value]);
   };
 
-  const onFinish = (values: any) => {
-    console.log("Success:", values);
-    const data = {
-      ...values,
-      name: authReducer.userInfo?.name,
-    };
-    console.log(data);
+  const onFinish = async (values: FieldType) => {
+    try {
+      const newNote = {
+        ...values,
+        userId: authReducer.userInfo?.id,
+      };
+      console.log(newNote);
+      const actionResult = await dispatch(createNote(newNote));
+      if (createNote.fulfilled.match(actionResult)) {
+        console.log("Note created successfully");
+        dispatch(
+          showNotification({
+            message: "Note created successfully",
+            type: NotificationType.Success,
+          })
+        );
+        navigate.push("/home");
+      } else if (createNote.rejected.match(actionResult)) {
+        dispatch(
+          showNotification({
+            message: "Failed to create note",
+            type: NotificationType.Error,
+          })
+        );
+      }
+    } catch (e) {
+      console.error(e);
+    }
   };
+
+
 
   return (
     <>
@@ -61,7 +94,9 @@ const CreateNote = (props: Props) => {
           rules={[{ required: true, message: "Please select an option!" }]}
         >
           <Select>
-            <Select.Option value="demo">Demo</Select.Option>
+            <Select.Option value="WORK">Work</Select.Option>
+            <Select.Option value="PERSONAL">Personal</Select.Option>
+            <Select.Option value="OTHERS">Others</Select.Option>
           </Select>
         </Form.Item>
 
