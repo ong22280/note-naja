@@ -47,7 +47,7 @@ const Note = (props: NoteProps) => {
   return (
     <>
       <Link href={`home/note/${props.id}`}>
-        <Card className="w-full" loading={loading}>
+        <Card className="w-full h-full" loading={loading}>
           <Meta
             avatar={
               <Avatar
@@ -68,9 +68,9 @@ const Note = (props: NoteProps) => {
           />
           <div className="mt-2 flex flex-col gap-y-2">
             <div>
-              {props.tags.map((tag) => {
+              {props.tags.length > 0 ? (props.tags.map((tag) => {
                 return <Tag key={tag.id}>{tag.name}</Tag>;
-              })}
+              })) : (<p>No tag</p>)}
             </div>
             <p className="border-2 border-green-500 rounded-md w-full px-2 text-center">
               {props.category}

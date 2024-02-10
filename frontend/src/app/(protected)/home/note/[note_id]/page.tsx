@@ -3,7 +3,7 @@
 import { useAppDispatch, useAppSelector } from "@/hooks/redux-hooks";
 import { getNoteById, noteSelector } from "@/store/slices/noteSlice";
 import { formattedDate } from "@/utils/dateFormat";
-import { Button, Timeline } from "antd";
+import { Avatar, Button, Tag, Timeline } from "antd";
 import Link from "next/link";
 import React, { useEffect } from "react";
 
@@ -48,31 +48,36 @@ const Note = (props: Props) => {
   return (
     <>
       <div className="flex justify-between">
-        <h2>Title</h2>
+        <h2 className="text-2xl font-bold">{noteReducer.note?.title}</h2>
         <Button type="primary">
           <Link href={`/home/note/${note_id}/edit`}>Edit</Link>
         </Button>
       </div>
-      <p>by {noteReducer.note?.user.name}</p>
-      <p>Create Date: {createAtFormatted}</p>
-      <p>Update Date: {updateAtFormatted}</p>
-      <p>Category: {noteReducer.note?.category}</p>
-      <p>
-        tag :
+      <div className="flex items-center gap-2 mt-4">
+        <Avatar
+          src={
+            noteReducer.note?.user.avatar
+              ? noteReducer.note.user.avatar
+              : "https://api.dicebear.com/7.x/miniavs/svg?seed=1"
+          }
+        />
+        <p>by {noteReducer.note?.user.name}</p>
+      </div>
+      <p>Create at {createAtFormatted}</p>
+      <p>{noteReducer.note?.category}</p>
+      <div className="flex items-center gap-x-1">
         {noteReducer.note?.tags.map((tag) => {
-          return <p key={tag.id}>{tag.name}</p>;
+          return <Tag key={tag.id}>{tag.name}</Tag>;
         })}
-      </p>
+      </div>
       <div className="grid grid-cols-12 gap-4">
         <div className="col-span-8">
-          {
-            <div
-              className="text-sm text-gray-700 mt-4 p-4 bg-slate-100 rounded-md"
-              dangerouslySetInnerHTML={{
-                __html: contentWithStyledTags,
-              }}
-            />
-          }
+          <div
+            className="text-sm text-gray-700 mt-4 p-4 bg-slate-100 rounded-md"
+            dangerouslySetInnerHTML={{
+              __html: contentWithStyledTags,
+            }}
+          />
         </div>
         <div className="col-span-4">
           <Timeline>
