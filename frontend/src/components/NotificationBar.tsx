@@ -28,7 +28,7 @@ const NotificationBar = () => {
         }`}
       >
         <div
-          className={`w-full max-w-sm mx-auto bg-${type}-500 text-white bg-white rounded-lg shadow-lg pointer-events-auto`}
+          className={`w-full max-w-sm mx-auto bg-${type}-500 text-white bg-white rounded-lg shadow-2xl border pointer-events-auto`}
         >
           <div className="flex items-center justify-between px-4 py-2 gap-x-4">
             <p className="font-semibold text-black">{message}</p>

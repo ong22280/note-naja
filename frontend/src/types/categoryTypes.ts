@@ -1,4 +1,6 @@
-enum CategoryType {
+import { Note } from "./noteTypes";
+
+export enum CategoryType {
   WORK = "WORK",
   PERSONAL = "PERSONAL",
   OTHERS = "OTHERS",

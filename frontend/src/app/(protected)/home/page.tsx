@@ -8,9 +8,6 @@ import React from "react";
 type Props = {};
 
 const Home = (props: Props) => {
-  const handleChange = (value: any) => {
-    console.log(`selected ${value}`);
-  };
 
   return (
     <>
@@ -29,41 +26,7 @@ const Home = (props: Props) => {
         </div>
       </div>
       <hr className=" bg-black mt-2"></hr>
-      {/* Filter */}
-      <div className="flex justify-between mt-2">
-        {/* Category */}
-        <div className="flex gap-4 ">
-          <div className="flex gap-2 items-center">
-            <p>all</p>
-            <Button>{100}</Button>
-          </div>
-          <div className="flex gap-2 items-center">
-            <p>work</p>
-            <Button>{20}</Button>
-          </div>
-          <div className="flex gap-2 items-center">
-            <p>personal</p>
-            <Button>{30}</Button>
-          </div>
-          <div className="flex gap-2 items-center">
-            <p>others</p>
-            <Button>{50}</Button>
-          </div>
-        </div>
 
-        {/* Sort */}
-        <div>
-          <Select
-            defaultValue="newest"
-            style={{ width: 120 }}
-            onChange={handleChange}
-            options={[
-              { value: "newest", label: "Newest" },
-              { value: "oldest", label: "Oldest" },
-            ]}
-          />
-        </div>
-      </div>
       {/* Note List */}
       <div className="mt-4">
         <NoteList />

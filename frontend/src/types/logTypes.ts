@@ -1,4 +1,6 @@
-type Log = {
+import { Note } from "./noteTypes";
+
+export type Log = {
   id: number;
   title: string;
   content: string;

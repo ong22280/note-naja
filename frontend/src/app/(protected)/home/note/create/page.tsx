@@ -1,14 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Form, Input, Select } from "antd";
 import dynamic from "next/dynamic";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux-hooks";
 import { authSelector } from "@/store/slices/authSlice";
-import { createNote } from "@/store/slices/noteSlice";
+import { createNote, noteSelector } from "@/store/slices/noteSlice";
 import { showNotification } from "@/store/slices/notificationSlice";
 import { NotificationType } from "@/types/notificationType";
 import { useRouter } from "next/navigation";
+import { CategoryType } from "@/types/categoryTypes";
 const { Option } = Select;
 
 const RichTextEditor = dynamic(() => import("@/components/rich-text-editor"), {
@@ -26,6 +27,8 @@ type Props = {};
 
 const CreateNote = (props: Props) => {
   const authReducer = useAppSelector(authSelector);
+  const noteReducer = useAppSelector(noteSelector);
+
   const dispatch = useAppDispatch();
 
   const navigate = useRouter();
@@ -34,6 +37,9 @@ const CreateNote = (props: Props) => {
   const handleTagInputChange = (value: string) => {
     setUserTags([...userTags, value]);
   };
+
+  // --- Fetch Tags ---
+
 
   const onFinish = async (values: FieldType) => {
     try {

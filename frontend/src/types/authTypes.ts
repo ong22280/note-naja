@@ -1,3 +1,5 @@
+import { Note } from "./noteTypes";
+
 type User = {
   email: string;
   password: string;
@@ -8,7 +10,7 @@ type NewUser = User & {
   name: string;
 };
 
-type UserBasicInfo = {
+export type UserBasicInfo = {
   id: number;
   avatar?: string | null;
   name: string;

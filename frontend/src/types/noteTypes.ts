@@ -1,23 +1,27 @@
-type Note = {
+import { UserBasicInfo } from "./authTypes";
+import { CategoryType } from "./categoryTypes";
+import { Log } from "./logTypes";
+
+export type Note = {
   id: number;
   title: string;
   content: string;
   createdAt: Date;
   updatedAt: Date;
-  user: User;
+  user: UserBasicInfo;
   logs: Log[];
-  category: Category;
+  category: CategoryType;
   tags: Tag[];
 };
 
-type NewNote = {
+export type NewNote = {
   title: string;
   content: string;
   category: CategoryType;
   tags: string[];
 };
 
-type NoteApiState = {
+export type NoteApiState = {
   note: Note | null;
   notes: Note[] | null;
   status: "idle" | "loading" | "failed";

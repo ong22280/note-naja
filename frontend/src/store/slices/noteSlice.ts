@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axiosInstance from "../../api/axiosInstance";
 import { AxiosError } from "axios";
 import { RootState } from "@/store/store";
+import { NewNote, Note, NoteApiState } from "@/types/noteTypes";
 
 const initialState: NoteApiState = {
   note: null,
@@ -40,6 +41,7 @@ export const getNoteById = createAsyncThunk(
   async (id: number, { rejectWithValue }) => {
     try {
       const { data: note } = await axiosInstance.get(`/notes/${id}`);
+      console.log(note);
       return note;
     } catch (error) {
       if (error instanceof AxiosError && error.response) {
