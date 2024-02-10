@@ -4,13 +4,13 @@ import asyncHandler from "express-async-handler";
 import * as NoteModel from "../services/noteService"; // เรียกใช้ noteModel.ts ที่เราสร้างขึ้นมา
 
 const createNote = asyncHandler(async (req: Request, res: Response) => {
-  const { title, content, userId, CategoryType, tags } = req.body;
+  const { title, content, userId, category, tags } = req.body;
 
   const note = await NoteModel.createNote(
     title,
     content,
     userId,
-    CategoryType,
+    category,
     tags
   );
 

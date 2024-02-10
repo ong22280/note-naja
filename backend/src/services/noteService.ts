@@ -20,6 +20,14 @@ async function createNote(
           name,
         })),
       },
+      logs: {
+        create: [
+          {
+            title: title,
+            content: content,
+          },
+        ],
+      },
     },
   });
   return note;
