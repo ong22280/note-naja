@@ -37,13 +37,14 @@ const getNoteById = asyncHandler(async (req: Request, res: Response) => {
 
 const updateNote = asyncHandler(async (req: Request, res: Response) => {
   const noteId = parseInt(req.params.id);
-  const { title, content, categoryId } = req.body;
+  const { title, content, category, tags } = req.body;
 
   const updatedNote = await NoteModel.updateNote(
     noteId,
     title,
     content,
-    categoryId
+    category,
+    tags
   );
 
   res.status(200).json(updatedNote);

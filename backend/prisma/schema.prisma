@@ -48,12 +48,15 @@ model Log {
   updatedAt DateTime @updatedAt
   note      Note     @relation(fields: [noteId], references: [id])
   noteId    Int
+  category  CategoryType
+  tags      Tag[]
 }
 
 model Tag {
   id        Int      @id @default(autoincrement())
   name      String   @unique
   notes     Note[]
+  logs      Log[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

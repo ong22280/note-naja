@@ -11,7 +11,7 @@ async function createNote(
 ): Promise<Note> {
 
   // if tags is undefined, create note without tags
-  
+
   if (tags === undefined) {
     const note = await prisma.note.create({
       data: {
@@ -24,6 +24,7 @@ async function createNote(
             {
               title: title,
               content: content,
+              category: category,
             },
           ],
         },
@@ -47,6 +48,12 @@ async function createNote(
             {
               title: title,
               content: content,
+              category: category,
+              tags: {
+                create: tags.map((name) => ({
+                  name,
+                })),
+              },
             },
           ],
         },
@@ -85,19 +92,69 @@ async function updateNote(
   id: number,
   title: string,
   content: string,
-  category: CategoryType
+  category: CategoryType,
+  tags: string[]
 ): Promise<Note | null> {
-  const updatedNote = await prisma.note.update({
-    where: {
-      id,
-    },
-    data: {
-      title,
-      content,
-      category,
-    },
-  });
-  return updatedNote;
+
+  // if tags is undefined, update note without tags
+
+  if (tags === undefined) {
+    const updatedNote = await prisma.note.update({
+      where: {
+        id,
+      },
+      data: {
+        title,
+        content,
+        category,
+      },
+    });
+
+    // create log
+    await prisma.log.create({
+      data: {
+        title: title,
+        content: content,
+        noteId: id,
+        category: category,
+      },
+    });
+
+    return updatedNote;
+  } else {
+    const updatedNote = await prisma.note.update({
+      where: {
+        id,
+      },
+      data: {
+        title,
+        content,
+        category,
+        tags: {
+          create: tags.map((name) => ({
+            name,
+          })),
+        },
+      },
+    });
+
+    // create log
+    await prisma.log.create({
+      data: {
+        title: title,
+        content: content,
+        noteId: id,
+        category: category,
+        tags: {
+          create: tags.map((name) => ({
+            name,
+          })),
+        },
+      },
+    });
+
+    return updatedNote;
+  }
 }
 
 async function deleteNote(id: number): Promise<void> {
