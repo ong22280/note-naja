@@ -41,7 +41,7 @@ export const getNoteById = createAsyncThunk(
   async (id: number, { rejectWithValue }) => {
     try {
       const { data: note } = await axiosInstance.get(`/notes/${id}`);
-      console.log(note);
+      // console.log(note);
       return note;
     } catch (error) {
       if (error instanceof AxiosError && error.response) {

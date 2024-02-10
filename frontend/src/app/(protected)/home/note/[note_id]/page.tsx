@@ -56,8 +56,8 @@ const Note = (props: Props) => {
       <div className="flex items-center gap-2 mt-4">
         <Avatar
           src={
-            noteReducer.note?.user.avatar
-              ? noteReducer.note.user.avatar
+            noteReducer.note?.user.avatar !== null
+              ? noteReducer.note?.user.avatar
               : "https://api.dicebear.com/7.x/miniavs/svg?seed=1"
           }
         />

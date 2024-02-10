@@ -13,3 +13,10 @@ export type CategoryType = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type CategoryApiState = {
+  category: CategoryType | null;
+  categories: CategoryType[] | null;
+  status: "idle" | "loading" | "failed";
+  error: string | null;
+};

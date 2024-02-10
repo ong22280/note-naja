@@ -1,18 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Form, Input, Select } from "antd";
 import dynamic from "next/dynamic";
-import { useAppSelector } from "@/hooks/redux-hooks";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux-hooks";
 import { authSelector } from "@/store/slices/authSlice";
+import { getNoteById, noteSelector, updateNote } from "@/store/slices/noteSlice";
+import { showNotification } from "@/store/slices/notificationSlice";
+import { NotificationType } from "@/types/notificationType";
+import { useRouter } from "next/navigation";
 const { Option } = Select;
-
-const initialValues = {
-  title: "Initial Title",
-  category: "demo",
-  tags: ["Tag 1", "Tag 2", "Tag 3"],
-  content: "<h1>Initial content</h1>",
-};
 
 const RichTextEditor = dynamic(() => import("@/components/rich-text-editor"), {
   ssr: false,
@@ -23,22 +20,76 @@ type FieldType = {
   content: string;
 };
 
-type Props = {};
+type Props = {
+  params: { note_id: string };
+};
 
 const EditNote = (props: Props) => {
+  // --- Params ---
+  const note_id = props.params.note_id;
+
+  // --- Router ---
+  const navigate = useRouter();
+
+  // --- Redux ---
   const authReducer = useAppSelector(authSelector);
+  const noteReducer = useAppSelector(noteSelector);
+  const dispatch = useAppDispatch();
+
+  // --- Initial Values ---
+  const initialValues = {
+    title: noteReducer.note?.title,
+    content: noteReducer.note?.content,
+    category: noteReducer.note?.category,
+    tags: noteReducer.note?.tags ? noteReducer.note.tags.map((tag) => tag.name) : [],
+  };
+
+  // --- Tags ---
   const [userTags, setUserTags] = useState<string[]>([]);
   const handleTagInputChange = (value: string) => {
     setUserTags([...userTags, value]);
   };
 
+  // --- Fetch Note ---
+  useEffect(() => {
+    if (noteReducer.status === "idle") {
+      const fetchNoteById = async () => {
+        const id = parseInt(note_id);
+        await dispatch(getNoteById(id));
+      };
+      fetchNoteById();
+    }
+  }, [note_id, dispatch]);
+
   const onFinish = (values: any) => {
-    console.log("Success:", values);
-    const data = {
-      ...values,
-      name: authReducer.userInfo?.name,
-    };
-    console.log(data);
+    try {
+      const data = {
+        ...values,
+        id: note_id,
+        userId: authReducer.userInfo?.id,
+      };
+      console.log(data);
+      const actionResult = dispatch(updateNote(data));
+      if (updateNote.fulfilled.match(actionResult)) {
+        console.log("Note updated successfully");
+        dispatch(
+          showNotification({
+            message: "Note updated successfully",
+            type: NotificationType.Success,
+          })
+        );
+        navigate.push("/home");
+      } else if (updateNote.rejected.match(actionResult)) {
+        dispatch(
+          showNotification({
+            message: "Failed to update note",
+            type: NotificationType.Error,
+          })
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -68,7 +119,9 @@ const EditNote = (props: Props) => {
           rules={[{ required: true, message: "Please select an option!" }]}
         >
           <Select>
-            <Select.Option value="demo">Demo</Select.Option>
+            <Select.Option value="WORK">Work</Select.Option>
+            <Select.Option value="PERSONAL">Personal</Select.Option>
+            <Select.Option value="OTHERS">Others</Select.Option>
           </Select>
         </Form.Item>
 
