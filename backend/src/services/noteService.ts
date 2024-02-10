@@ -9,32 +9,58 @@ async function createNote(
   category: CategoryType,
   tags: string[]
 ): Promise<Note> {
-  const note = await prisma.note.create({
-    data: {
-      title,
-      content,
-      userId,
-      category,
-      tags: {
-        create: tags.map((name) => ({
-          name,
-        })),
+  if (tags === undefined) {
+    const note = await prisma.note.create({
+      data: {
+        title,
+        content,
+        userId,
+        category,
+        logs: {
+          create: [
+            {
+              title: title,
+              content: content,
+            },
+          ],
+        },
       },
-      logs: {
-        create: [
-          {
-            title: title,
-            content: content,
-          },
-        ],
+    });
+    return note;
+  } else {
+    const note = await prisma.note.create({
+      data: {
+        title,
+        content,
+        userId,
+        category,
+        tags: {
+          create: tags.map((name) => ({
+            name,
+          })),
+        },
+        logs: {
+          create: [
+            {
+              title: title,
+              content: content,
+            },
+          ],
+        },
       },
-    },
-  });
-  return note;
+    });
+    return note;
+  }
 }
 
 async function getAllNotes(): Promise<Note[]> {
-  const notes = await prisma.note.findMany();
+  const notes = await prisma.note.findMany({
+    include: {
+      user: true,
+      logs: true,
+      tags: true,
+    },
+  });
   return notes;
 }
 
