@@ -2,8 +2,9 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axiosInstance from "../../api/axiosInstance";
 import { AxiosError } from "axios";
 import { RootState } from "@/store/store";
+import { AuthApiStateType, AuthTokenStateType, NewUserType, UserType, UserBasicInfoType } from "@/types/authTypes";
 
-const initialState: AuthApiState = {
+const initialState: AuthApiStateType = {
   token:
     typeof window !== "undefined" && localStorage.getItem("authToken")
       ? (JSON.parse(localStorage.getItem("authToken") || "").token as null)
@@ -18,11 +19,11 @@ const initialState: AuthApiState = {
 
 export const login = createAsyncThunk(
   "auth/login",
-  async (data: User, { rejectWithValue }) => {
+  async (data: UserType, { rejectWithValue }) => {
     try {
       const { data: response } = await axiosInstance.post("/login", data);
       const token: string = response.access_token;
-      const authToken: AuthTokenState = {
+      const authToken: AuthTokenStateType = {
         token,
       };
       localStorage.setItem("authToken", JSON.stringify(authToken));
@@ -39,7 +40,7 @@ export const login = createAsyncThunk(
 
 export const signup = createAsyncThunk(
   "auth/sign-up",
-  async (data: NewUser, { rejectWithValue }) => {
+  async (data: NewUserType, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post("/signup", data);
       const resData = response.data;
@@ -76,8 +77,8 @@ export const getUser = createAsyncThunk("auth/me", async () => {
   try {
     const token = JSON.parse(localStorage.getItem("authToken") || "").token;
     const { data: user } = await axiosInstance.get(`/users/me`);
-    const userInfo: UserBasicInfo = user;
-    const authToken: AuthTokenState = {
+    const userInfo: UserBasicInfoType = user;
+    const authToken: AuthTokenStateType = {
       token,
       userInfo,
     };

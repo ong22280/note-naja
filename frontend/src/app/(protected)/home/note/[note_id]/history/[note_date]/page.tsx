@@ -21,7 +21,7 @@ const HistoryNote = (props: Props) => {
       </div>
       <p>by ...</p>
       <p>Update Date: {`{update_date}`}</p>
-      <p>Category: {`{category}`}</p>
+      <p>CategoryType: {`{category}`}</p>
       <p>tag : {`{tag}`}</p>
       <div className="grid grid-cols-12 gap-4">
         <div className="col-span-8">{`{content}`}</div>

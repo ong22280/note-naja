@@ -3,7 +3,7 @@ import { Button, Pagination, Select, Empty } from "antd";
 import { getAllNotes, noteSelector } from "@/store/slices/noteSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux-hooks";
 import Note from "./note";
-import { CategoryType } from "@/types/categoryTypes";
+import { CategoryEnumType } from "@/types/categoryTypes";
 import Link from "next/link";
 
 type Props = {};
@@ -31,17 +31,17 @@ const NoteList = (props: Props) => {
     setCurrentPage(page);
   };
 
-  // --- Category ---
+  // --- CategoryType ---
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const allNumberCategory = noteReducer?.notes?.length;
   const workNumberCategory = noteReducer?.notes?.filter(
-    (note) => note.category === CategoryType.WORK
+    (note) => note.category === CategoryEnumType.WORK
   ).length;
   const personalNumberCategory = noteReducer?.notes?.filter(
-    (note) => note.category === CategoryType.PERSONAL
+    (note) => note.category === CategoryEnumType.PERSONAL
   ).length;
   const othersNumberCategory = noteReducer?.notes?.filter(
-    (note) => note.category === CategoryType.OTHERS
+    (note) => note.category === CategoryEnumType.OTHERS
   ).length;
 
   const handleCategoryChange = (category: string) => {
@@ -97,19 +97,19 @@ const NoteList = (props: Props) => {
             <p>{allNumberCategory}</p>
           </div>
           <div className="flex gap-2 items-center">
-            <Button onClick={() => handleCategoryChange(CategoryType.WORK)}>
+            <Button onClick={() => handleCategoryChange(CategoryEnumType.WORK)}>
               work
             </Button>
             <p>{workNumberCategory}</p>
           </div>
           <div className="flex gap-2 items-center">
-            <Button onClick={() => handleCategoryChange(CategoryType.PERSONAL)}>
+            <Button onClick={() => handleCategoryChange(CategoryEnumType.PERSONAL)}>
               personal
             </Button>
             <p>{personalNumberCategory}</p>
           </div>
           <div className="flex gap-2 items-center">
-            <Button onClick={() => handleCategoryChange(CategoryType.OTHERS)}>
+            <Button onClick={() => handleCategoryChange(CategoryEnumType.OTHERS)}>
               others
             </Button>
             <p>{othersNumberCategory}</p>
@@ -132,13 +132,13 @@ const NoteList = (props: Props) => {
 
       {/* Empty Note of Category */}
       {workNumberCategory === 0 &&
-        selectedCategory === CategoryType.WORK &&
+        selectedCategory === CategoryEnumType.WORK &&
         emptyCategoryRender}
       {personalNumberCategory === 0 &&
-        selectedCategory === CategoryType.PERSONAL &&
+        selectedCategory === CategoryEnumType.PERSONAL &&
         emptyCategoryRender}
       {othersNumberCategory === 0 &&
-        selectedCategory === CategoryType.OTHERS &&
+        selectedCategory === CategoryEnumType.OTHERS &&
         emptyCategoryRender}
 
       {/* Note List */}

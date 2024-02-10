@@ -1,10 +1,10 @@
-import { Note } from "./noteTypes";
+import { NoteType } from "./noteTypes";
 
-export type Log = {
+export type LogType = {
   id: number;
   title: string;
   content: string;
   createdAt: Date;
   updatedAt: Date;
-  note: Note;
+  note: NoteType;
 };

@@ -3,8 +3,9 @@
 import { Avatar, Card, Tag } from "antd";
 import Link from "next/link";
 import React, { useState } from "react";
-import { CategoryType } from "@/types/categoryTypes";
+import { CategoryEnumType } from "@/types/categoryTypes";
 import { formattedDate } from "@/utils/dateFormat";
+import { TagType } from "@/types/tagTypes";
 
 const { Meta } = Card;
 
@@ -27,8 +28,8 @@ type NoteProps = {
     createdAt: Date;
     updatedAt: Date;
   }[];
-  category: CategoryType;
-  tags: Tag[];
+  category: CategoryEnumType;
+  tags: TagType[];
 };
 
 const Note = (props: NoteProps) => {

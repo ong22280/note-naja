@@ -28,10 +28,10 @@ async function getAllTags(): Promise<Tag[]> {
   return tags;
 }
 
-async function getTagById(id: number): Promise<Tag | null> {
+async function getTagByName(name: string): Promise<Tag | null> {
   const tag = await prisma.tag.findUnique({
     where: {
-      id,
+      name,
     },
     include: {
       notes: true,
@@ -40,30 +40,19 @@ async function getTagById(id: number): Promise<Tag | null> {
   return tag;
 }
 
-async function updateTag(id: number, name: string): Promise<Tag | null> {
-  const updatedTag = await prisma.tag.update({
+
+async function deleteTag(name: string): Promise<void> {
+  await prisma.tag.delete({
     where: {
-      id,
-    },
-    data: {
       name,
     },
   });
-  return updatedTag;
 }
 
-async function deleteTag(id: number): Promise<void> {
-  await prisma.tag.delete({
-    where: {
-      id,
-    },
-  });
-}
-
-async function getAllNotesOfTag(id: number): Promise<Tag | null> {
+async function getAllNotesOfTag(name: string): Promise<Tag | null> {
   const tag = await prisma.tag.findUnique({
     where: {
-      id,
+      name,
     },
     include: {
       notes: true,
@@ -72,4 +61,4 @@ async function getAllNotesOfTag(id: number): Promise<Tag | null> {
   return tag;
 }
 
-export { createTag, getAllTags, getTagById, updateTag, deleteTag, getAllNotesOfTag };
+export { createTag, getAllTags, getTagByName, deleteTag, getAllNotesOfTag };

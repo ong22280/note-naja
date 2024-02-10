@@ -17,10 +17,10 @@ const getAllTags = asyncHandler(async (req: Request, res: Response) => {
   res.status(200).json(tags);
 });
 
-const getTagById = asyncHandler(async (req: Request, res: Response) => {
-  const tagId = parseInt(req.params.id);
+const getTagByName = asyncHandler(async (req: Request, res: Response) => {
+  const name = req.params.name;
 
-  const tag = await TagModel.getTagById(tagId);
+  const tag = await TagModel.getTagByName(name);
 
   if (!tag) {
     throw new BadRequestError("Tag not found");
@@ -29,21 +29,12 @@ const getTagById = asyncHandler(async (req: Request, res: Response) => {
   res.status(200).json(tag);
 });
 
-const updateTag = asyncHandler(async (req: Request, res: Response) => {
-  const tagId = parseInt(req.params.id);
-  const { name } = req.body;
-
-  const updatedTag = await TagModel.updateTag(tagId, name);
-
-  res.status(200).json(updatedTag);
-});
-
 const deleteTag = asyncHandler(async (req: Request, res: Response) => {
-  const tagId = parseInt(req.params.id);
+  const name = req.params.name;
 
-  await TagModel.deleteTag(tagId);
+  await TagModel.deleteTag(name);
 
   res.status(200).json({ message: "Tag deleted successfully" });
 });
 
-export { createTag, getAllTags, getTagById, updateTag, deleteTag };
+export { createTag, getAllTags, getTagByName, deleteTag };

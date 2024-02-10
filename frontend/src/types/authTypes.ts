@@ -1,34 +1,34 @@
-import { Note } from "./noteTypes";
+import { NoteType } from "./noteTypes";
 
-type User = {
+export type UserType = {
   email: string;
   password: string;
 };
 
-type NewUser = User & {
+export type NewUserType = UserType & {
   avatar?: string;
   name: string;
 };
 
-export type UserBasicInfo = {
+export type UserBasicInfoType = {
   id: number;
   avatar?: string | null;
   name: string;
   email: string;
   password: string;
-  notes: Note[];
+  notes: NoteType[];
   createdAt: Date;
   updatedAt: Date;
 };
 
-type AuthApiState = {
+export type AuthApiStateType = {
   token: string | null;
-  userInfo?: UserBasicInfo | null;
+  userInfo?: UserBasicInfoType | null;
   status: "idle" | "loading" | "failed";
   error: string | null;
 };
 
-type AuthTokenState = {
+export type AuthTokenStateType = {
   token?: string | null;
-  userInfo?: UserBasicInfo | null;
+  userInfo?: UserBasicInfoType | null;
 };

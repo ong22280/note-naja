@@ -9,7 +9,7 @@ import { createNote, noteSelector } from "@/store/slices/noteSlice";
 import { showNotification } from "@/store/slices/notificationSlice";
 import { NotificationType } from "@/types/notificationType";
 import { useRouter } from "next/navigation";
-import { CategoryType } from "@/types/categoryTypes";
+import { CategoryEnumType } from "@/types/categoryTypes";
 const { Option } = Select;
 
 const RichTextEditor = dynamic(() => import("@/components/rich-text-editor"), {
@@ -19,7 +19,7 @@ const RichTextEditor = dynamic(() => import("@/components/rich-text-editor"), {
 type FieldType = {
   title: string;
   content: string;
-  category: CategoryType;
+  category: CategoryEnumType;
   tags: string[];
 };
 
@@ -95,7 +95,7 @@ const CreateNote = (props: Props) => {
         </Form.Item>
 
         <Form.Item
-          label="Category"
+          label="CategoryType"
           name="category"
           rules={[{ required: true, message: "Please select an option!" }]}
         >

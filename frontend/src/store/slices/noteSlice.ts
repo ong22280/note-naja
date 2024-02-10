@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axiosInstance from "../../api/axiosInstance";
 import { AxiosError } from "axios";
 import { RootState } from "@/store/store";
-import { NewNote, Note, NoteApiState } from "@/types/noteTypes";
+import { NewNote, NoteType, NoteApiState } from "@/types/noteTypes";
 
 const initialState: NoteApiState = {
   note: null,
@@ -55,7 +55,7 @@ export const getNoteById = createAsyncThunk(
 
 export const updateNote = createAsyncThunk(
   "note/update",
-  async (data: Note, { rejectWithValue }) => {
+  async (data: NoteType, { rejectWithValue }) => {
     try {
       const { data: note } = await axiosInstance.put(`/notes/${data.id}`, data);
       return note;
@@ -95,7 +95,7 @@ const noteSlice = createSlice({
         state.status = "loading";
         state.error = null;
       })
-      .addCase(createNote.fulfilled, (state, action: PayloadAction<Note>) => {
+      .addCase(createNote.fulfilled, (state, action: PayloadAction<NoteType>) => {
         state.status = "idle";
         state.note = action.payload;
       })
@@ -113,7 +113,7 @@ const noteSlice = createSlice({
         state.status = "loading";
         state.error = null;
       })
-      .addCase(getAllNotes.fulfilled, (state, action: PayloadAction<Note[]>) => {
+      .addCase(getAllNotes.fulfilled, (state, action: PayloadAction<NoteType[]>) => {
         state.status = "idle";
         state.notes = action.payload;
       })
@@ -131,7 +131,7 @@ const noteSlice = createSlice({
         state.status = "loading";
         state.error = null;
       })
-      .addCase(getNoteById.fulfilled, (state, action: PayloadAction<Note>) => {
+      .addCase(getNoteById.fulfilled, (state, action: PayloadAction<NoteType>) => {
         state.status = "idle";
         state.note = action.payload;
       })
@@ -149,7 +149,7 @@ const noteSlice = createSlice({
         state.status = "loading";
         state.error = null;
       })
-      .addCase(updateNote.fulfilled, (state, action: PayloadAction<Note>) => {
+      .addCase(updateNote.fulfilled, (state, action: PayloadAction<NoteType>) => {
         state.status = "idle";
         state.note = action.payload;
       })

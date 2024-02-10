@@ -1,4 +1,4 @@
-import { PrismaClient, Note, CategoryType } from "@prisma/client";
+import { PrismaClient, Note, CategoryType, Tag } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -32,6 +32,37 @@ async function createNote(
     });
     return note;
   } else {
+
+    // check if tag already exists, if not, create tag
+    const existingTags = await prisma.tag.findMany({
+      where: {
+        name: {
+          in: tags,
+        },
+      },
+    });
+
+    const existingTagNames = existingTags.map((tag) => tag.name);
+
+    const newTags = tags.filter((tag) => !existingTagNames.includes(tag));
+
+    await prisma.tag.createMany({
+      data: newTags.map((name) => ({
+        name,
+      })),
+      skipDuplicates: true,
+    });
+
+    const createdTags = await prisma.tag.findMany({
+      where: {
+        name: {
+          in: tags,
+        },
+      },
+    });
+
+    const allTags = [...existingTags, ...createdTags];
+
     const note = await prisma.note.create({
       data: {
         title,
@@ -39,8 +70,8 @@ async function createNote(
         userId,
         category,
         tags: {
-          create: tags.map((name) => ({
-            name,
+          connect: allTags.map((tag) => ({
+            id: tag.id,
           })),
         },
         logs: {
@@ -50,8 +81,8 @@ async function createNote(
               content: content,
               category: category,
               tags: {
-                create: tags.map((name) => ({
-                  name,
+                connect: allTags.map((tag) => ({
+                  id: tag.id,
                 })),
               },
             },
@@ -59,6 +90,7 @@ async function createNote(
         },
       },
     });
+
     return note;
   }
 }
@@ -122,6 +154,37 @@ async function updateNote(
 
     return updatedNote;
   } else {
+
+    // check if tag already exists, if not, create tag
+    const existingTags = await prisma.tag.findMany({
+      where: {
+        name: {
+          in: tags,
+        },
+      },
+    });
+
+    const existingTagNames = existingTags.map((tag) => tag.name);
+
+    const newTags = tags.filter((tag) => !existingTagNames.includes(tag));
+
+    await prisma.tag.createMany({
+      data: newTags.map((name) => ({
+        name,
+      })),
+      skipDuplicates: true,
+    });
+
+    const createdTags = await prisma.tag.findMany({
+      where: {
+        name: {
+          in: tags,
+        },
+      },
+    });
+
+    const allTags = [...existingTags, ...createdTags];
+
     const updatedNote = await prisma.note.update({
       where: {
         id,
@@ -131,14 +194,15 @@ async function updateNote(
         content,
         category,
         tags: {
-          create: tags.map((name) => ({
-            name,
+          connect: allTags.map((tag) => ({
+            id: tag.id,
           })),
         },
       },
     });
 
     // create log
+
     await prisma.log.create({
       data: {
         title: title,
@@ -146,8 +210,8 @@ async function updateNote(
         noteId: id,
         category: category,
         tags: {
-          create: tags.map((name) => ({
-            name,
+          connect: allTags.map((tag) => ({
+            id: tag.id,
           })),
         },
       },

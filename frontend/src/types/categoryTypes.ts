@@ -1,15 +1,15 @@
-import { Note } from "./noteTypes";
+import { NoteType } from "./noteTypes";
 
-export enum CategoryType {
+export enum CategoryEnumType {
   WORK = "WORK",
   PERSONAL = "PERSONAL",
   OTHERS = "OTHERS",
 }
 
-type Category = {
+export type CategoryType = {
   id: number;
-  name: CategoryType;
-  notes: Note[];
+  name: CategoryEnumType;
+  notes: NoteType[];
   createdAt: Date;
   updatedAt: Date;
 };

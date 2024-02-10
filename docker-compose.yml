@@ -3,6 +3,8 @@ version: "3.9"
 services:
   mysql:
     image: "mysql"
+    env_file:
+      - ./backend/.env
     ports:
       - "3306:3306"
     environment:
@@ -11,17 +13,9 @@ services:
       MYSQL_ROOT_HOST: "%"
     volumes:
       - "db_data:/var/lib/mysql"
-      - "./docker/provision/mysql/init:/docker-entrypoint-initdb.d"
+      - "./backend/docker/provision/mysql/init:/docker-entrypoint-initdb.d"
     networks:
       - mysql_network
-    healthcheck:
-      test:
-        - CMD
-        - mysqladmin
-        - ping
-        - "-ppassword"
-      retries: 3
-      timeout: 5s
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -36,6 +30,17 @@ services:
       - mysql
     networks:
       - mysql_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+    environment:
+      - NODE_ENV=development
 
 networks:
   mysql_network:

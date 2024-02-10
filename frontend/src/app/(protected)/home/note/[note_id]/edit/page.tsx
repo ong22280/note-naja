@@ -63,7 +63,7 @@ const EditNote = (props: Props) => {
         </Form.Item>
 
         <Form.Item
-          label="Category"
+          label="CategoryType"
           name="category"
           rules={[{ required: true, message: "Please select an option!" }]}
         >
