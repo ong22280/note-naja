@@ -11,12 +11,6 @@ import { NotificationType } from "@/types/notificationType";
 import { useRouter } from "next/navigation";
 import { CategoryEnumType } from "@/types/categoryTypes";
 import { tagSelector, getAllTags } from "@/store/slices/tagSlice";
-import { TagType } from "@/types/tagTypes";
-import { randomKeyList } from "@/utils/randomKeyList";
-
-const { Option } = Select;
-
-const options: SelectProps["options"] = [];
 
 const RichTextEditor = dynamic(() => import("@/components/rich-text-editor"), {
   ssr: false,
@@ -27,6 +21,11 @@ type FieldType = {
   content: string;
   category: CategoryEnumType;
   tags: string[];
+};
+
+type OptionType = {
+  value: string;
+  label: string;
 };
 
 type Props = {};
@@ -42,16 +41,7 @@ const CreateNote = (props: Props) => {
   const navigate = useRouter();
 
   // --- Tags ---
-  const [userTags, setUserTags] = useState<string[]>([]);
-
-  const handleTagInputChange = (value: TagType) => {
-    console.log("value", value);
-    // if (value) {
-    //   let tagName;
-    //   for
-
-    // setUserTags([...userTags, value]);
-  };
+  const [initOptions, setInitOptions] = useState<OptionType[]>([]);
 
   // --- Fetch Tags ---
   useEffect(() => {
@@ -61,26 +51,22 @@ const CreateNote = (props: Props) => {
       };
       fetchTags();
     }
-    if (tagReducer.tags && tagReducer.status === "idle") {
-      console.log("tagReducer.tags", tagReducer.tags);
-
-      // set initTags to options
+    if (
+      tagReducer.tags != undefined &&
+      tagReducer.tags?.length >= 1 &&
+      tagReducer.status === "idle"
+    ) {
+      const optionsSet = new Set();
       for (let i = 0; i < tagReducer.tags.length; i++) {
-        options.push({
+        optionsSet.add({
           value: tagReducer.tags[i].name,
           label: tagReducer.tags[i].name,
         });
       }
-
-      console.log("options", options);
-
-      // setInitTags(initTags);
+      const options: any = Array.from(optionsSet);
+      setInitOptions(options);
     }
   }, [dispatch]);
-
-  console.log("tagReducer", tagReducer);
-
-  console.log("userTags", userTags);
 
   const onFinish = async (values: FieldType) => {
     try {
@@ -122,7 +108,6 @@ const CreateNote = (props: Props) => {
         style={{ maxWidth: 600 }}
         initialValues={{ remember: true }}
         onFinish={onFinish}
-        // onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
         <Form.Item<FieldType>
@@ -150,19 +135,8 @@ const CreateNote = (props: Props) => {
             mode="tags"
             style={{ width: "100%" }}
             placeholder="Tags Mode"
-            options={options}
-            onChange={handleTagInputChange}
-            value={
-              // userTags.length > 0 ? userTags[userTags.length - 1] : undefined
-              undefined
-            }
+            options={initOptions}
           >
-            {/* {userTags.map((tagName, index) => (
-              <Option key={randomKeyList(index)} value={tagName}>
-                {tagName}
-              </Option>
-            ))} */}
-            {/* {userTags} */}
           </Select>
         </Form.Item>
 
