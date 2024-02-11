@@ -1,11 +1,13 @@
 "use client";
 
 import { useAppDispatch, useAppSelector } from "@/hooks/redux-hooks";
+import { authSelector } from "@/store/slices/authSlice";
 import { logSelector } from "@/store/slices/logSlice";
-import { getNoteById, noteSelector } from "@/store/slices/noteSlice";
+import { deleteNote, getNoteById, noteSelector } from "@/store/slices/noteSlice";
 import { formattedDate, formattedDateTime } from "@/utils/dateFormat";
-import { Avatar, Button, Tag, Timeline } from "antd";
+import { Avatar, Button, message, Popconfirm, Tag, Timeline } from "antd";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 
 type Props = {
@@ -19,6 +21,10 @@ const Note = (props: Props) => {
   // --- Redux ---
   const dispatch = useAppDispatch();
   const noteReducer = useAppSelector(noteSelector);
+  const authReducer = useAppSelector(authSelector);
+
+  // --- Router ---
+  const navigate = useRouter();
 
   // --- Formatted Date ---
   const createAtFormatted = formattedDate(noteReducer.note?.createdAt);
@@ -43,6 +49,24 @@ const Note = (props: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [note_id, dispatch]);
 
+  // --- Action ---
+  const confirm = (e: React.MouseEvent<HTMLElement> | undefined) => {
+    handleDeleteNote();
+  };
+
+  const handleDeleteNote = async () => {
+    console.log("Delete Note");
+    const id = parseInt(note_id);
+    const actionResult = await dispatch(deleteNote(id));
+    if (deleteNote.fulfilled.match(actionResult)) {
+      message.success("Note deleted successfully");
+      navigate.push("/home");
+    } else {
+      message.error("Failed to delete the note");
+    }
+
+  };
+
   console.log(noteReducer.note);
 
   return (
@@ -54,9 +78,22 @@ const Note = (props: Props) => {
         <div>
           <div className="flex justify-between">
             <h2 className="text-2xl font-bold">{noteReducer.note?.title}</h2>
-            <Button type="primary">
-              <Link href={`/home/note/${note_id}/edit`}>Edit</Link>
-            </Button>
+            <div className="flex space-x-2">
+              <Button type="primary">
+                <Link href={`/home/note/${note_id}/edit`}>Edit</Link>
+              </Button>
+              {authReducer.userInfo?.id === noteReducer.note?.user.id && (
+                <Popconfirm
+                  title="Delete the note"
+                  description="Are you sure to delete this note?"
+                  onConfirm={confirm}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <Button danger>Delete</Button>
+                </Popconfirm>
+              )}
+            </div>
           </div>
           <div className="flex flex-col gap-y-2">
             <div className="flex items-center gap-2 mt-4">
