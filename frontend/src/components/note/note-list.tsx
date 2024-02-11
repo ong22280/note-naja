@@ -76,6 +76,7 @@ const NoteList = (props: Props) => {
       };
       fetchNotes();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
   // console.log(noteReducer.notes);
@@ -85,26 +86,32 @@ const NoteList = (props: Props) => {
       {/* Filter */}
       <div className="flex justify-between mb-4">
         {/* Category */}
-        <div className="flex gap-4 ">
+        <div className="flex gap-4">
           <div className="flex gap-2 items-center">
-            <Button onClick={() => handleCategoryChange("all")}>all</Button>
+            <Button onClick={() => handleCategoryChange("all")}>
+              <p className="text-green-600">all</p>
+            </Button>
             <p>{allNumberCategory}</p>
           </div>
           <div className="flex gap-2 items-center">
             <Button onClick={() => handleCategoryChange(CategoryEnumType.WORK)}>
-              work
+              <p className="text-green-600">work</p>
             </Button>
             <p>{workNumberCategory}</p>
           </div>
           <div className="flex gap-2 items-center">
-            <Button onClick={() => handleCategoryChange(CategoryEnumType.PERSONAL)}>
-              personal
+            <Button
+              onClick={() => handleCategoryChange(CategoryEnumType.PERSONAL)}
+            >
+              <p className="text-green-600">personal</p>
             </Button>
             <p>{personalNumberCategory}</p>
           </div>
           <div className="flex gap-2 items-center">
-            <Button onClick={() => handleCategoryChange(CategoryEnumType.OTHERS)}>
-              others
+            <Button
+              onClick={() => handleCategoryChange(CategoryEnumType.OTHERS)}
+            >
+              <p className="text-green-600">others</p>
             </Button>
             <p>{othersNumberCategory}</p>
           </div>

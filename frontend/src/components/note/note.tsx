@@ -73,7 +73,7 @@ const Note = (props: NoteProps) => {
                 return <Tag key={tag.id}>{tag.name}</Tag>;
               })) : (<p>No tag</p>)}
             </div>
-            <p className="border-2 border-green-500 rounded-md w-full px-2 text-center">
+            <p className="border-2 rounded-md w-full px-2 text-center text-green-600">
               {props.category}
             </p>
           </div>

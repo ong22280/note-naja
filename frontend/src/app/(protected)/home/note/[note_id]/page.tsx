@@ -40,6 +40,7 @@ const Note = (props: Props) => {
       };
       fetchNoteById();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [note_id, dispatch]);
 
   console.log(noteReducer.note);
@@ -57,22 +58,26 @@ const Note = (props: Props) => {
               <Link href={`/home/note/${note_id}/edit`}>Edit</Link>
             </Button>
           </div>
-          <div className="flex items-center gap-2 mt-4">
-            <Avatar
-              src={
-                noteReducer.note?.user.avatar !== null
-                  ? noteReducer.note?.user.avatar
-                  : "https://api.dicebear.com/7.x/miniavs/svg?seed=1"
-              }
-            />
-            <p>by {noteReducer.note?.user.name}</p>
-          </div>
-          <p>Create at {createAtFormatted}</p>
-          <p>{noteReducer.note?.category}</p>
-          <div className="flex items-center gap-x-1">
-            {noteReducer.note?.tags.map((tag) => {
-              return <Tag key={tag.id}>{tag.name}</Tag>;
-            })}
+          <div className="flex flex-col gap-y-2">
+            <div className="flex items-center gap-2 mt-4">
+              <Avatar
+                src={
+                  noteReducer.note?.user.avatar !== null
+                    ? noteReducer.note?.user.avatar
+                    : "https://api.dicebear.com/7.x/miniavs/svg?seed=1"
+                }
+              />
+              <p>by {noteReducer.note?.user.name}</p>
+            </div>
+            <p>Create at {createAtFormatted}</p>
+            <p className="border-2 rounded-md px-2 w-fit text-green-600">
+              {noteReducer.note?.category}
+            </p>
+            <div className="flex items-center gap-x-1">
+              {noteReducer.note?.tags.map((tag) => {
+                return <Tag key={tag.id}>{tag.name}</Tag>;
+              })}
+            </div>
           </div>
           <div className="grid grid-cols-12 gap-4">
             <div className="col-span-8">
