@@ -3,6 +3,7 @@ import authReducer from "./slices/authSlice";
 import notificationReducer from "./slices/notificationSlice";
 import noteReducer from "./slices/noteSlice";
 import tagReducer from "./slices/tagSlice";
+import logReducer from "./slices/logSlice";
 
 export const makeStore = () =>
   configureStore({
@@ -11,6 +12,7 @@ export const makeStore = () =>
       notification: notificationReducer,
       note: noteReducer,
       tag: tagReducer,
+      log: logReducer,
     },
   });
 

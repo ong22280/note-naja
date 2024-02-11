@@ -41,7 +41,14 @@ async function createLog(
 }
 
 async function getAllLogs(): Promise<Log[]> {
-  const logs = await prisma.log.findMany();
+  const logs = await prisma.log.findMany(
+    {
+      include: {
+        note: true,
+        tags: true,
+      },
+    }
+  );
   return logs;
 }
 
@@ -52,6 +59,7 @@ async function getLogById(id: number): Promise<Log | null> {
     },
     include: {
       note: true,
+      tags: true,
     },
   });
   return log;

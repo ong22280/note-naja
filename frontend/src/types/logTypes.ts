@@ -5,6 +5,7 @@ export type LogType = {
   id: number;
   title: string;
   content: string;
+  category: string;
   createdAt: Date;
   updatedAt: Date;
   note: NoteType;
