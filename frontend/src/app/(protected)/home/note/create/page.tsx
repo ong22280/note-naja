@@ -12,6 +12,8 @@ import { useRouter } from "next/navigation";
 import { CategoryEnumType } from "@/types/categoryTypes";
 import { tagSelector, getAllTags } from "@/store/slices/tagSlice";
 import { TagType } from "@/types/tagTypes";
+import { randomKeyList } from "@/utils/randomKeyList";
+
 const { Option } = Select;
 
 const options: SelectProps["options"] = [];
@@ -30,43 +32,54 @@ type FieldType = {
 type Props = {};
 
 const CreateNote = (props: Props) => {
-
   // --- Redux ---
   const authReducer = useAppSelector(authSelector);
   const noteReducer = useAppSelector(noteSelector);
   const tagReducer = useAppSelector(tagSelector);
   const dispatch = useAppDispatch();
 
+  // --- Router ---
   const navigate = useRouter();
 
   // --- Tags ---
-  const [userTags, setUserTags] = useState<TagType[]>([]);
+  const [userTags, setUserTags] = useState<string[]>([]);
+
   const handleTagInputChange = (value: TagType) => {
-    setUserTags([...userTags, value]);
+    console.log("value", value);
+    // if (value) {
+    //   let tagName;
+    //   for
+
+    // setUserTags([...userTags, value]);
   };
 
   // --- Fetch Tags ---
   useEffect(() => {
-    // dispatch(getAllTags());
     if (tagReducer.status === "idle") {
       const fetchTags = async () => {
         await dispatch(getAllTags());
       };
       fetchTags();
     }
-    if (tagReducer.tags) {
+    if (tagReducer.tags && tagReducer.status === "idle") {
       console.log("tagReducer.tags", tagReducer.tags);
 
       // set initTags to options
       for (let i = 0; i < tagReducer.tags.length; i++) {
-        options.push({ value: tagReducer.tags[i].name, label: tagReducer.tags[i].name });
+        options.push({
+          value: tagReducer.tags[i].name,
+          label: tagReducer.tags[i].name,
+        });
       }
+
+      console.log("options", options);
 
       // setInitTags(initTags);
     }
-  }, []);
+  }, [dispatch]);
 
   console.log("tagReducer", tagReducer);
+
   console.log("userTags", userTags);
 
   const onFinish = async (values: FieldType) => {
@@ -140,14 +153,16 @@ const CreateNote = (props: Props) => {
             options={options}
             onChange={handleTagInputChange}
             value={
-              userTags.length > 0 ? userTags[userTags.length - 1] : undefined
+              // userTags.length > 0 ? userTags[userTags.length - 1] : undefined
+              undefined
             }
           >
-            {userTags.map((tag, index) => (
-              <Option key={index} value={tag.name}>
-                {tag.name}
+            {/* {userTags.map((tagName, index) => (
+              <Option key={randomKeyList(index)} value={tagName}>
+                {tagName}
               </Option>
-            ))}
+            ))} */}
+            {/* {userTags} */}
           </Select>
         </Form.Item>
 
