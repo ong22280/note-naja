@@ -15,4 +15,12 @@ npm install
 # npm run build
 # npx prisma migrate dev
 # npm run start
-npm run dev
+npm run dev &
+
+# Start the third process
+echo "Start running the react app"
+cd $r/frontend
+npm install
+# npm run build
+# npm start
+npm run dev &
