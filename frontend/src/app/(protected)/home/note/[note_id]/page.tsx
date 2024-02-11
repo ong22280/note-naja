@@ -1,8 +1,9 @@
 "use client";
 
 import { useAppDispatch, useAppSelector } from "@/hooks/redux-hooks";
+import { logSelector } from "@/store/slices/logSlice";
 import { getNoteById, noteSelector } from "@/store/slices/noteSlice";
-import { formattedDate } from "@/utils/dateFormat";
+import { formattedDate, formattedDateTime } from "@/utils/dateFormat";
 import { Avatar, Button, Tag, Timeline } from "antd";
 import Link from "next/link";
 import React, { useEffect } from "react";
@@ -18,6 +19,7 @@ const Note = (props: Props) => {
   // --- Redux ---
   const dispatch = useAppDispatch();
   const noteReducer = useAppSelector(noteSelector);
+  const logReducer = useAppSelector(logSelector);
 
   // --- Formatted Date ---
   const createAtFormatted = formattedDate(noteReducer.note?.createdAt);
@@ -34,7 +36,6 @@ const Note = (props: Props) => {
   // --- Fetch Note ---
   useEffect(() => {
     if (noteReducer.status === "idle") {
-      // dispatch(getNoteById(note_id));
       const fetchNoteById = async () => {
         const id = parseInt(note_id);
         await dispatch(getNoteById(id));
@@ -47,7 +48,8 @@ const Note = (props: Props) => {
 
   return (
     <>
-      {noteReducer.status === "loading" || noteReducer.note?.user == undefined ? (
+      {noteReducer.status === "loading" ||
+      noteReducer.note?.user == undefined ? (
         <p>Loading...</p>
       ) : (
         <div>
@@ -83,16 +85,24 @@ const Note = (props: Props) => {
                 }}
               />
             </div>
+
+            {/* --- Timeline --- */}
             <div className="col-span-4">
-              <Timeline>
-                {["2015-09-01", "2015-09-02", "2015-09-03", "2015-09-04"].map(
-                  (date, index) => (
-                    <Timeline.Item key={index}>
-                      <Link href={`${note_id}/history/${date}`}>{date}</Link>
-                    </Timeline.Item>
-                  )
-                )}
-              </Timeline>
+              {noteReducer.note?.logs.length > 0 && (
+                <Timeline>
+                  {noteReducer.note.logs.map((log) => {
+                    return (
+                      <Timeline.Item key={log.id}>
+                        <Link href={`/home/note/${note_id}/history/${log.id}`}>
+                          {formattedDateTime(log.createdAt)}
+                        </Link>
+                      </Timeline.Item>
+                    );
+                  })}
+
+
+                </Timeline>
+              )}
             </div>
           </div>
         </div>
