@@ -99,56 +99,63 @@ const CreateNote = (props: Props) => {
 
   return (
     <>
-      <h2 className="text-2xl font-bold mb-2">Create Note</h2>
-      <Form
-        name="basic"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        style={{ maxWidth: 600 }}
-        initialValues={{ remember: true }}
-        onFinish={onFinish}
-        autoComplete="off"
-      >
-        <Form.Item<FieldType>
-          label="Title"
-          name="title"
-          rules={[{ required: true, message: "Please input your username!" }]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          label="CategoryType"
-          name="category"
-          rules={[{ required: true, message: "Please select an option!" }]}
-        >
-          <Select>
-            <Select.Option value="WORK">Work</Select.Option>
-            <Select.Option value="PERSONAL">Personal</Select.Option>
-            <Select.Option value="OTHERS">Others</Select.Option>
-          </Select>
-        </Form.Item>
-
-        <Form.Item label="Tags" name="tags">
-          <Select
-            mode="tags"
-            style={{ width: "100%" }}
-            placeholder="Tags Mode"
-            options={initOptions}
+      {tagReducer.status === "loading" || tagReducer.tags === undefined ? (
+        <div>Loading...</div>
+      ) : (
+        <>
+          <h2 className="text-2xl font-bold mb-2">Create Note</h2>
+          <Form
+            name="basic"
+            labelCol={{ span: 8 }}
+            wrapperCol={{ span: 16 }}
+            style={{ maxWidth: 600 }}
+            initialValues={{ remember: true }}
+            onFinish={onFinish}
+            autoComplete="off"
           >
-          </Select>
-        </Form.Item>
+            <Form.Item<FieldType>
+              label="Title"
+              name="title"
+              rules={[
+                { required: true, message: "Please input your username!" },
+              ]}
+            >
+              <Input />
+            </Form.Item>
 
-        <Form.Item label="content" name="content">
-          <RichTextEditor />
-        </Form.Item>
+            <Form.Item
+              label="CategoryType"
+              name="category"
+              rules={[{ required: true, message: "Please select an option!" }]}
+            >
+              <Select>
+                <Select.Option value="WORK">Work</Select.Option>
+                <Select.Option value="PERSONAL">Personal</Select.Option>
+                <Select.Option value="OTHERS">Others</Select.Option>
+              </Select>
+            </Form.Item>
 
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-        </Form.Item>
-      </Form>
+            <Form.Item label="Tags" name="tags">
+              <Select
+                mode="tags"
+                style={{ width: "100%" }}
+                placeholder="Tags Mode"
+                options={initOptions}
+              ></Select>
+            </Form.Item>
+
+            <Form.Item label="content" name="content">
+              <RichTextEditor />
+            </Form.Item>
+
+            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+              <Button type="primary" htmlType="submit">
+                Submit
+              </Button>
+            </Form.Item>
+          </Form>
+        </>
+      )}
     </>
   );
 };
