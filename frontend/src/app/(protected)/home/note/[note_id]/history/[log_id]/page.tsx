@@ -1,31 +1,34 @@
 "use client";
 
 import { useAppDispatch, useAppSelector } from "@/hooks/redux-hooks";
-import { logSelector } from "@/store/slices/logSlice";
+import { getLogById, logSelector } from "@/store/slices/logSlice";
 import { getNoteById, noteSelector } from "@/store/slices/noteSlice";
+import { LogType } from "@/types/logTypes";
 import { formattedDate, formattedDateTime } from "@/utils/dateFormat";
 import { Avatar, Button, Tag, Timeline } from "antd";
 import Link from "next/link";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 type Props = {
-  params: { note_id: string };
+  params: { log_id: string; note_id: string };
 };
 
-const Note = (props: Props) => {
+const HistoryNote = (props: Props) => {
   // --- Params ---
   const note_id = props.params.note_id;
+  const log_id = props.params.log_id;
 
   // --- Redux ---
   const dispatch = useAppDispatch();
   const noteReducer = useAppSelector(noteSelector);
+  const logReducer = useAppSelector(logSelector);
 
   // --- Formatted Date ---
-  const createAtFormatted = formattedDate(noteReducer.note?.createdAt);
+  const createAtFormatted = formattedDateTime(logReducer.log?.createdAt);
 
   // --- Set Styled Tags ---
-  const contentWithStyledTags = noteReducer.note?.content
-    ? noteReducer.note.content
+  const contentWithStyledTags = logReducer.log?.content
+    ? logReducer.log.content
         .replace(/<h1>/g, '<h1 style="font-size: 24px;">')
         .replace(/<ol>/g, '<ol style="margin-left: 20px;">')
         .replace(/<li>/g, '<li style="list-style-type: square;">')
@@ -40,21 +43,32 @@ const Note = (props: Props) => {
       };
       fetchNoteById();
     }
-  }, [note_id, dispatch]);
-
-  console.log(noteReducer.note);
+    if (logReducer.status === "idle") {
+      const fetchLogById = async () => {
+        const id = parseInt(log_id);
+        await dispatch(getLogById(id));
+      };
+      fetchLogById();
+    }
+  }, [note_id, dispatch, log_id]);
 
   return (
     <>
       {noteReducer.status === "loading" ||
-      noteReducer.note?.user == undefined ? (
+      noteReducer.note?.user == undefined ||
+      logReducer.status === "loading" ||
+      logReducer.log == undefined ? (
         <p>Loading...</p>
       ) : (
         <div>
           <div className="flex justify-between">
-            <h2 className="text-2xl font-bold">{noteReducer.note?.title}</h2>
+            <div className="flex gap-2">
+              <h2 className="text-2xl font-bold text-green-500">History of</h2>
+              <h2 className="text-2xl font-bold">{logReducer.log.title}</h2>
+              <h2 className="text-2xl font-bold">(Current Name: {noteReducer.note.title})</h2>
+            </div>
             <Button type="primary">
-              <Link href={`/home/note/${note_id}/edit`}>Edit</Link>
+              <Link href={`/home/note/${note_id}`}>Back to Current Note</Link>
             </Button>
           </div>
           <div className="flex items-center gap-2 mt-4">
@@ -68,9 +82,9 @@ const Note = (props: Props) => {
             <p>by {noteReducer.note?.user.name}</p>
           </div>
           <p>Create at {createAtFormatted}</p>
-          <p>{noteReducer.note?.category}</p>
+          <p>{logReducer.log.category}</p>
           <div className="flex items-center gap-x-1">
-            {noteReducer.note?.tags.map((tag) => {
+            {logReducer.log.tags.map((tag) => {
               return <Tag key={tag.id}>{tag.name}</Tag>;
             })}
           </div>
@@ -107,4 +121,4 @@ const Note = (props: Props) => {
   );
 };
 
-export default Note;
+export default HistoryNote;

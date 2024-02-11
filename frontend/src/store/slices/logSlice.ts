@@ -41,7 +41,7 @@ export const getLogById = createAsyncThunk(
   async (id: number, { rejectWithValue }) => {
     try {
       const { data: log } = await axiosInstance.get(`/logs/${id}`);
-      // console.log(log);
+      console.log("log from slice", log);
       return log;
     } catch (error) {
       if (error instanceof AxiosError && error.response) {
