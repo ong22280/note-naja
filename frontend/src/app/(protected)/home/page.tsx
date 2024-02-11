@@ -1,26 +1,56 @@
 "use client";
 
 import NoteList from "@/components/note/note-list";
-import { Button, Select } from "antd";
+import { Button, Tour } from "antd";
 import Link from "next/link";
-import React from "react";
+import React, { useRef, useState } from "react";
+import type { TourProps } from "antd";
+import { InfoCircleOutlined } from "@ant-design/icons";
+import tourSVG from "../../../../public/images/undraw_product_tour_re_8bai.svg";
+import Image from "next/image";
 
 type Props = {};
 
 const Home = (props: Props) => {
+  const ref1 = useRef(null);
+  const ref2 = useRef(null);
+  const ref3 = useRef(null);
+
+  const [open, setOpen] = useState<boolean>(false);
+
+  const steps: TourProps["steps"] = [
+    {
+      title: "Welcome to Note App",
+      description: "let's take a tour of the app.",
+      cover: <Image alt="tour.png" src={tourSVG} width={200} height={200} />,
+      target: () => ref1.current,
+    },
+    {
+      title: "Create Note",
+      description: "Click to create a new your note.",
+      target: () => ref2.current,
+    },
+    {
+      title: "Find Notes",
+      description: "Explore all notes created by you and other users.",
+      target: () => ref3.current,
+    },
+  ];
 
   return (
     <>
       {/* Head */}
       <div className="flex justify-between">
         <div className="flex flex-col gap-2 w-1/2">
-          <h2 className="text-2xl font-bold mb-2">Notes</h2>
+          <h2 className="text-2xl font-bold mb-2">
+            Notes <InfoCircleOutlined onClick={() => setOpen(true)} />{" "}
+          </h2>
           <p className="text-gray-500">
             explore all notes created by you and other users.
           </p>
         </div>
         <div>
-          <Button type="primary">
+          <Button type="primary" ref={ref2}>
             <Link href="home/note/create">Create Note</Link>
           </Button>
         </div>
@@ -28,66 +58,12 @@ const Home = (props: Props) => {
       <hr className=" bg-black mt-2"></hr>
 
       {/* Note List */}
-      <div className="mt-4">
+      <div className="mt-4" ref={ref3}>
         <NoteList />
       </div>
+      <Tour open={open} onClose={() => setOpen(false)} steps={steps} />
     </>
   );
 };
 
 export default Home;
-
-// "use client";
-
-// import React, { useEffect } from "react";
-// import { useAppDispatch, useAppSelector } from "../../../hooks/redux-hooks";
-// import { authSelector, logout } from "../../../store/slices/authSlice";
-// import { useRouter } from "next/navigation";
-// import { showNotification } from "@/store/slices/notificationSlice";
-// import { NotificationType } from "@/types/notificationType";
-
-// const Home = () => {
-//   const dispatch = useAppDispatch();
-//   const navigate = useRouter();
-
-//   const authReducer = useAppSelector(authSelector);
-
-//   const handleLogout = async () => {
-//     try {
-//       const actionResult = await dispatch(logout()).unwrap();
-//       if (logout.fulfilled.match(actionResult)) {
-//         return navigate.push("/log-in");
-//       } else if (logout.rejected.match(actionResult)) {
-//         dispatch(
-//           showNotification({
-//             message: "Failed to logout",
-//             type: NotificationType.Error,
-//           })
-//         );
-//       }
-//     } catch (e) {
-//       console.error(e);
-//     }
-//   };
-
-//   return (
-//     <>
-//       {/* Display authentication status */}
-//       <div>
-//         {authReducer.status === "loading" && <p>Loading...</p>}
-//         {authReducer.status === "failed" && <p>Error: {authReducer.error}</p>}
-//       </div>
-//       <h1>Home</h1>
-//       <h4>Name: {authReducer?.userInfo?.name}</h4>
-//       <h4>Email: {authReducer?.userInfo?.email}</h4>
-//       <button
-//         className="py-2 px-4 bg-red-500 text-white rounded-md"
-//         onClick={handleLogout}
-//       >
-//         Logout
-//       </button>
-//     </>
-//   );
-// };
-
-// export default Home;

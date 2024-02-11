@@ -10,7 +10,7 @@ const HomeSidebar = (props: Props) => {
         <Link href="/home">
           <div className="flex text-lg font-bold mb-4 gap-x-1">
             <h2>Note</h2>
-            <h2 className=" text-green-400">Naja</h2>
+            <h2 className=" text-green-600">Naja</h2>
           </div>
         </Link>
         <ul>

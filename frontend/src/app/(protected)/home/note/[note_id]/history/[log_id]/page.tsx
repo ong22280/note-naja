@@ -50,6 +50,7 @@ const HistoryNote = (props: Props) => {
       };
       fetchLogById();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [note_id, dispatch, log_id]);
 
   return (
@@ -63,30 +64,36 @@ const HistoryNote = (props: Props) => {
         <div>
           <div className="flex justify-between">
             <div className="flex gap-2">
-              <h2 className="text-2xl font-bold text-green-500">History of</h2>
+              <h2 className="text-2xl font-bold text-green-600">History of</h2>
               <h2 className="text-2xl font-bold">{logReducer.log.title}</h2>
-              <h2 className="text-2xl font-bold">(Current Name: {noteReducer.note.title})</h2>
+              <h2 className="text-2xl font-bold">
+                (Current Name: {noteReducer.note.title})
+              </h2>
             </div>
             <Button type="primary">
               <Link href={`/home/note/${note_id}`}>Back to Current Note</Link>
             </Button>
           </div>
-          <div className="flex items-center gap-2 mt-4">
-            <Avatar
-              src={
-                noteReducer.note?.user.avatar !== null
-                  ? noteReducer.note?.user.avatar
-                  : "https://api.dicebear.com/7.x/miniavs/svg?seed=1"
-              }
-            />
-            <p>by {noteReducer.note?.user.name}</p>
-          </div>
-          <p>Create at {createAtFormatted}</p>
-          <p>{logReducer.log.category}</p>
-          <div className="flex items-center gap-x-1">
-            {logReducer.log.tags.map((tag) => {
-              return <Tag key={tag.id}>{tag.name}</Tag>;
-            })}
+          <div className="flex flex-col gap-y-2">
+            <div className="flex items-center gap-2 mt-4">
+              <Avatar
+                src={
+                  noteReducer.note?.user.avatar !== null
+                    ? noteReducer.note?.user.avatar
+                    : "https://api.dicebear.com/7.x/miniavs/svg?seed=1"
+                }
+              />
+              <p>by {noteReducer.note?.user.name}</p>
+            </div>
+            <p>Log at {createAtFormatted}</p>
+            <p className="border-2 rounded-md px-2 w-fit text-green-600">
+              {logReducer.log.category}
+            </p>
+            <div className="flex items-center gap-x-1">
+              {logReducer.log.tags.map((tag) => {
+                return <Tag key={tag.id}>{tag.name}</Tag>;
+              })}
+            </div>
           </div>
           <div className="grid grid-cols-12 gap-4">
             <div className="col-span-8">

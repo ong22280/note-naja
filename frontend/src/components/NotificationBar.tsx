@@ -32,7 +32,7 @@ const NotificationBar = () => {
         >
           <div className="flex items-center justify-between px-4 py-2 gap-x-4">
             <p className="font-semibold text-black">{message}</p>
-            <button className="text-green-400" onClick={handleClose}>
+            <button className="text-green-600" onClick={handleClose}>
               <svg
                 className="w-4 h-4 fill-current"
                 viewBox="0 0 20 20"
