@@ -2,17 +2,14 @@
 
 import { authSelector, logout } from "@/store/slices/authSlice";
 import { showNotification } from "@/store/slices/notificationSlice";
-import { Avatar, Button, Popover, Select } from "antd";
-import Search from "antd/es/input/Search";
-import type { SearchProps } from "antd/es/input/Search";
+import { Avatar, Button, Popover } from "antd";
+import Search from "@/components/home/Search";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NotificationType } from "@/types/notificationType";
 import { useRouter } from "next/navigation";
 
 type Props = {};
-const onSearch: SearchProps["onSearch"] = (value, _e, info) =>
-  console.log(info?.source, value);
 
 const HomeHeader = (props: Props) => {
   // --- Redux ---
@@ -52,21 +49,14 @@ const HomeHeader = (props: Props) => {
     <header className="bg-slate-800 text-white py-4">
       <div className="container mx-auto px-4  items-center">
         <div className="flex items-center justify-between">
-          <Search
-            placeholder="input search text"
-            onSearch={onSearch}
-            enterButton
-            style={{ width: 300 }}
-          />
+          <Search />
           <div className="flex items-center gap-4">
             <h3 className="text-xl font-bold">{userInfo?.name}</h3>
             <Popover content={content} title={userInfo?.email} trigger="click">
               <Avatar
                 size={32}
                 src="https://api.dicebear.com/7.x/miniavs/svg?seed=1"
-              >
-                {/* <Button>Click me</Button> */}
-              </Avatar>
+              />
             </Popover>
           </div>
         </div>
