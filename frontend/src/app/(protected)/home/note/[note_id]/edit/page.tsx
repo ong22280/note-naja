@@ -5,10 +5,15 @@ import { Button, Form, Input, Select } from "antd";
 import dynamic from "next/dynamic";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux-hooks";
 import { authSelector } from "@/store/slices/authSlice";
-import { getNoteById, noteSelector, updateNote } from "@/store/slices/noteSlice";
+import {
+  getNoteById,
+  noteSelector,
+  updateNote,
+} from "@/store/slices/noteSlice";
 import { showNotification } from "@/store/slices/notificationSlice";
 import { NotificationType } from "@/types/notificationType";
 import { useRouter } from "next/navigation";
+import { tagSelector } from "@/store/slices/tagSlice";
 const { Option } = Select;
 
 const RichTextEditor = dynamic(() => import("@/components/rich-text-editor"), {
@@ -18,6 +23,11 @@ const RichTextEditor = dynamic(() => import("@/components/rich-text-editor"), {
 type FieldType = {
   title: string;
   content: string;
+};
+
+type OptionType = {
+  value: string;
+  label: string;
 };
 
 type Props = {
@@ -34,6 +44,7 @@ const EditNote = (props: Props) => {
   // --- Redux ---
   const authReducer = useAppSelector(authSelector);
   const noteReducer = useAppSelector(noteSelector);
+  const tagReducer = useAppSelector(tagSelector);
   const dispatch = useAppDispatch();
 
   // --- Initial Values ---
@@ -41,11 +52,14 @@ const EditNote = (props: Props) => {
     title: noteReducer.note?.title,
     content: noteReducer.note?.content,
     category: noteReducer.note?.category,
-    tags: noteReducer.note?.tags ? noteReducer.note.tags.map((tag) => tag.name) : [],
+    tags: noteReducer.note?.tags
+      ? noteReducer.note.tags.map((tag) => tag.name)
+      : [],
   };
 
   // --- Tags ---
   const [userTags, setUserTags] = useState<string[]>([]);
+  const [initOptions, setInitOptions] = useState<OptionType[]>([]);
   const handleTagInputChange = (value: string) => {
     setUserTags([...userTags, value]);
   };
@@ -59,9 +73,24 @@ const EditNote = (props: Props) => {
       };
       fetchNoteById();
     }
+    if (
+      tagReducer.tags != undefined &&
+      tagReducer.tags?.length >= 1 &&
+      tagReducer.status === "idle"
+    ) {
+      const optionsSet = new Set();
+      for (let i = 0; i < tagReducer.tags.length; i++) {
+        optionsSet.add({
+          value: tagReducer.tags[i].name,
+          label: tagReducer.tags[i].name,
+        });
+      }
+      const options: any = Array.from(optionsSet);
+      setInitOptions(options);
+    }
   }, [note_id, dispatch]);
 
-  const onFinish = (values: any) => {
+  const onFinish = async (values: any) => {
     try {
       const data = {
         ...values,
@@ -69,7 +98,7 @@ const EditNote = (props: Props) => {
         userId: authReducer.userInfo?.id,
       };
       console.log(data);
-      const actionResult = dispatch(updateNote(data));
+      const actionResult = await dispatch(updateNote(data));
       if (updateNote.fulfilled.match(actionResult)) {
         console.log("Note updated successfully");
         dispatch(
@@ -102,7 +131,6 @@ const EditNote = (props: Props) => {
         style={{ maxWidth: 600 }}
         initialValues={initialValues}
         onFinish={onFinish}
-        // onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
         <Form.Item<FieldType>
@@ -130,17 +158,10 @@ const EditNote = (props: Props) => {
             mode="tags"
             style={{ width: "100%" }}
             placeholder="Tags Mode"
+            options={initOptions}
+            // value={userTags}
             onChange={handleTagInputChange}
-            value={
-              userTags.length > 0 ? userTags[userTags.length - 1] : undefined
-            }
-          >
-            {userTags.map((tag, index) => (
-              <Option key={index} value={tag}>
-                {tag}
-              </Option>
-            ))}
-          </Select>
+          ></Select>
         </Form.Item>
 
         <Form.Item label="content" name="content">

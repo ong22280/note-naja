@@ -8,12 +8,6 @@ import Link from "next/link";
 
 type Props = {};
 
-const mockNote = Array(20).fill({
-  title: "Card title",
-  description: "This is the description",
-  content: "Content",
-});
-
 const NoteList = (props: Props) => {
   // --- Redux ---
   const dispatch = useAppDispatch();

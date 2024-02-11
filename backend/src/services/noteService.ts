@@ -175,6 +175,19 @@ async function updateNote(
 
     return updatedNote;
   } else {
+    console.log(tags);
+
+    // before update, check if tag is unused, if unused, disconnect tag
+    const unusedTags = await prisma.tag.findMany({
+      where: {
+        name: {
+          notIn: tags,
+        },
+      },
+    });
+
+    console.log("unusedTags: ", unusedTags);
+
     // check if tag already exists, if not, create tag
     const existingTags = await prisma.tag.findMany({
       where: {
@@ -187,6 +200,21 @@ async function updateNote(
     const existingTagNames = existingTags.map((tag) => tag.name);
 
     const newTags = tags.filter((tag) => !existingTagNames.includes(tag));
+
+    if (unusedTags.length > 0) {
+      await prisma.note.update({
+        where: {
+          id,
+        },
+        data: {
+          tags: {
+            disconnect: unusedTags.map((tag) => ({
+              id: tag.id,
+            })),
+          },
+        },
+      });
+    }
 
     await prisma.tag.createMany({
       data: newTags.map((name) => ({

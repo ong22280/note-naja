@@ -33,7 +33,6 @@ type Props = {};
 const CreateNote = (props: Props) => {
   // --- Redux ---
   const authReducer = useAppSelector(authSelector);
-  const noteReducer = useAppSelector(noteSelector);
   const tagReducer = useAppSelector(tagSelector);
   const dispatch = useAppDispatch();
 
