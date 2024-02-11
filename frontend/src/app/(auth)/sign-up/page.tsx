@@ -6,6 +6,7 @@ import { showNotification } from "../../../store/slices/notificationSlice";
 import Link from "next/link";
 import { NotificationType } from "@/types/notificationType";
 import { Button, Form, Input  } from "antd";
+import { useRouter } from "next/navigation";
 
 type FieldType = {
   name?: string;
@@ -14,7 +15,12 @@ type FieldType = {
 };
 
 const Signup = () => {
+
+  // --- Redux ---
   const dispatch = useAppDispatch();
+
+  // --- Router ---
+  const navigate = useRouter();
 
   const handleSignup = async (values: FieldType) => {
     const { name, email, password } = values;
@@ -34,6 +40,7 @@ const Signup = () => {
             type: NotificationType.Success,
           })
         );
+        navigate.push("/log-in");
       } else {
         dispatch(
           showNotification({

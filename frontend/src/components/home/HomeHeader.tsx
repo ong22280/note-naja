@@ -25,7 +25,7 @@ const HomeHeader = (props: Props) => {
 
   const handleLogout = async () => {
     try {
-      const actionResult = await dispatch(logout()).unwrap();
+      const actionResult: any = await dispatch<any>(logout()).unwrap();
       if (logout.fulfilled.match(actionResult)) {
         return navigate.push("/log-in");
       } else if (logout.rejected.match(actionResult)) {
