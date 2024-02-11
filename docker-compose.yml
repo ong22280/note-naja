@@ -31,17 +31,6 @@ services:
     networks:
       - mysql_network
 
-  # frontend:
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "3000:3000"
-  #   volumes:
-  #     - ./frontend:/app
-  #   environment:
-  #     - NODE_ENV=development
-
 networks:
   mysql_network:
     driver: bridge
