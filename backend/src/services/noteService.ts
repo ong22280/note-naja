@@ -270,6 +270,12 @@ async function updateNote(
 }
 
 async function deleteNote(id: number): Promise<void> {
+  await prisma.log.deleteMany({
+    where: {
+      noteId: id,
+    },
+  });
+
   await prisma.note.delete({
     where: {
       id,
