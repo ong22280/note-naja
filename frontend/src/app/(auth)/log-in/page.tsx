@@ -1,12 +1,19 @@
 "use client";
 
 import { useAppDispatch } from "../../../hooks/redux-hooks";
-import { getUser, login } from "../../../store/slices/authSlice";
+import { getUser, googleAuth, login } from "../../../store/slices/authSlice";
 import { showNotification } from "../../../store/slices/notificationSlice";
 import Link from "next/link";
 import { NotificationType } from "@/types/notificationType";
 import { useRouter } from "next/navigation";
 import { Button, Form, Input } from "antd";
+import {
+  CredentialResponse,
+  GoogleLogin,
+  GoogleOAuthProvider,
+} from "@react-oauth/google";
+import { useEffect } from "react";
+import { gapi } from "gapi-script";
 
 type FieldType = {
   email?: string;
@@ -14,10 +21,27 @@ type FieldType = {
 };
 
 const Login = () => {
+  // --- Redux ---
   const dispatch = useAppDispatch();
+
+  // --- Router ---
   const router = useRouter();
 
-  const handleLogin = async (values:FieldType) => {
+  const client_id =
+    "1090445180313-entt1njfbbvobcvl27rna7naiatgtjmj.apps.googleusercontent.com";
+  console.log(client_id);
+
+  useEffect(() => {
+    const initClient = () => {
+      gapi.client.init({
+        clientId: client_id,
+        scope: "",
+      });
+    };
+    gapi.load("client:auth2", initClient);
+  }, []);
+
+  const handleLogin = async (values: FieldType) => {
     const { email, password } = values;
     // This is only a basic validation of inputs. Improve this as needed.
     if (email && password) {
@@ -48,6 +72,37 @@ const Login = () => {
       );
     }
   };
+
+  const handleGoogleLogin = async (response: CredentialResponse) => {
+    const { credential } = response;
+    if (!credential) {
+      dispatch(
+        showNotification({
+          message: "Google authentication failed",
+          type: NotificationType.Error,
+        })
+      );
+      return;
+    }
+    const actionResult = await dispatch(googleAuth({ credential, client_id }));
+    if (googleAuth.fulfilled.match(actionResult)) {
+      await dispatch(getUser());
+      dispatch(
+        showNotification({
+          message: "Logged in successfully",
+          type: NotificationType.Success,
+        })
+      );
+      router.push("/home");
+    } else if (googleAuth.rejected.match(actionResult)) {
+      dispatch(
+        showNotification({
+          message: "Google authentication failed",
+          type: NotificationType.Error,
+        })
+      );
+    }
+  }
 
   return (
     <>
@@ -93,6 +148,22 @@ const Login = () => {
               </Button>
             </Form.Item>
           </Form>
+
+          {/* Google Login */}
+          <div className="flex justify-center">
+            <GoogleOAuthProvider clientId={client_id}>
+              <GoogleLogin
+                onSuccess={(response: CredentialResponse) => {
+                  console.log(response);
+                  handleGoogleLogin(response);
+                }}
+                onError={() => {
+                  console.error("Error");
+                }}
+              />
+            </GoogleOAuthProvider>
+          </div>
+
           <Link
             className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
             href="/sign-up"

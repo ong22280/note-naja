@@ -65,7 +65,8 @@ const CreateNote = (props: Props) => {
       const options: any = Array.from(optionsSet);
       setInitOptions(options);
     }
-  }, [dispatch]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const onFinish = async (values: FieldType) => {
     try {

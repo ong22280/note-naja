@@ -88,7 +88,8 @@ const EditNote = (props: Props) => {
       const options: any = Array.from(optionsSet);
       setInitOptions(options);
     }
-  }, [note_id, dispatch]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const onFinish = async (values: any) => {
     try {

@@ -2,7 +2,13 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axiosInstance from "../../api/axiosInstance";
 import { AxiosError } from "axios";
 import { RootState } from "@/store/store";
-import { AuthApiStateType, AuthTokenStateType, NewUserType, UserType, UserBasicInfoType } from "@/types/authTypes";
+import {
+  AuthApiStateType,
+  AuthTokenStateType,
+  NewUserType,
+  UserType,
+  UserBasicInfoType,
+} from "@/types/authTypes";
 
 const initialState: AuthApiStateType = {
   token:
@@ -45,6 +51,30 @@ export const signup = createAsyncThunk(
       const response = await axiosInstance.post("/signup", data);
       const resData = response.data;
       return resData;
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) {
+        const errorResponse = error.response.data;
+        return rejectWithValue(errorResponse);
+      }
+      throw error;
+    }
+  }
+);
+
+export const googleAuth = createAsyncThunk(
+  "auth/google-auth",
+  async (
+    data: { credential: string; client_id: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const { data: response } = await axiosInstance.post("/google-auth", data);
+      const token: string = response.access_token;
+      const authToken: AuthTokenStateType = {
+        token,
+      };
+      localStorage.setItem("authToken", JSON.stringify(authToken));
+      return token;
     } catch (error) {
       if (error instanceof AxiosError && error.response) {
         const errorResponse = error.response.data;
@@ -127,6 +157,24 @@ const authSlice = createSlice({
             (action.payload as ErrorResponse).message || "Registration failed";
         } else {
           state.error = action.error.message || "Registration failed";
+        }
+      })
+
+      .addCase(googleAuth.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(googleAuth.fulfilled, (state, action: PayloadAction<string>) => {
+        state.status = "idle";
+      })
+      .addCase(googleAuth.rejected, (state, action) => {
+        state.status = "failed";
+        if (action.payload) {
+          state.error =
+            (action.payload as ErrorResponse).message ||
+            "Google authentication failed";
+        } else {
+          state.error = action.error.message || "Google authentication failed";
         }
       })
 

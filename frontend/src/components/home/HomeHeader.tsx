@@ -8,6 +8,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NotificationType } from "@/types/notificationType";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 type Props = {};
 
@@ -55,7 +56,7 @@ const HomeHeader = (props: Props) => {
             <Popover content={content} title={userInfo?.email} trigger="click">
               <Avatar
                 size={32}
-                src="https://api.dicebear.com/7.x/miniavs/svg?seed=1"
+                src={userInfo?.avatar}
               />
             </Popover>
           </div>

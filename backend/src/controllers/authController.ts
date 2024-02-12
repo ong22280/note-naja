@@ -7,6 +7,9 @@ import {
 } from "../middleware/errorMiddleware";
 import asyncHandler from "express-async-handler";
 import bcrypt from "bcryptjs";
+import { OAuth2Client } from "google-auth-library";
+
+const client = new OAuth2Client();
 
 const prisma = new PrismaClient();
 
@@ -49,15 +52,69 @@ const authenticateUser = asyncHandler(async (req: Request, res: Response) => {
   const user = await prisma.user.findUnique({
     where: { email },
   });
-  if (!user || !(await bcrypt.compare(password, user.password))) {
-    throw new AuthenticationError("User not found / password incorrect");
+
+  if (user?.password) {
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      throw new AuthenticationError("User not found / password incorrect");
+    }
   }
-  const access_token = generateToken(res, user.id.toString());
-  const refresh_token = refreshToken(res, user.id.toString());
-  res.status(200).json({
-    access_token,
-    refresh_token,
-  });
+  if (user !== null) {
+    const access_token = generateToken(res, user.id.toString());
+    const refresh_token = refreshToken(res, user.id.toString());
+    res.status(200).json({
+      access_token,
+      refresh_token,
+    });
+  }
+});
+
+const googleAuth = asyncHandler(async (req: Request, res: Response) => {
+  const { credential, client_id } = req.body;
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: client_id,
+    });
+    const payload = ticket.getPayload();
+    if (payload === undefined) {
+      throw new AuthenticationError("Google authentication failed");
+    }
+
+    // if user exists, generate token and send it
+    const existingUser = await prisma.user.findUnique({
+      where: { email: payload["email"] },
+    });
+    if (existingUser) {
+      const access_token = generateToken(res, existingUser.id.toString());
+      const refresh_token = refreshToken(res, existingUser.id.toString());
+      res.status(200).json({
+        access_token,
+        refresh_token,
+      });
+      return;
+    } else {
+      if (payload["email"] === undefined || payload["name"] === undefined) {
+        throw new AuthenticationError("Google authentication failed");
+      }
+      const newUser = await prisma.user.create({
+        data: {
+          avatar: payload["picture"],
+          name: payload["name"],
+          email: payload["email"],
+        },
+      });
+
+      const access_token = generateToken(res, newUser.id.toString());
+      const refresh_token = refreshToken(res, newUser.id.toString());
+      res.status(200).json({
+        access_token,
+        refresh_token,
+      });
+      return;
+    }
+  } catch (err) {
+    res.status(400).json({ err });
+  }
 });
 
 const logoutUser = asyncHandler(async (req: Request, res: Response) => {
@@ -65,4 +122,4 @@ const logoutUser = asyncHandler(async (req: Request, res: Response) => {
   res.status(200).json({ message: "Successfully logged out" });
 });
 
-export { signupUser, authenticateUser, logoutUser };
+export { signupUser, authenticateUser, googleAuth, logoutUser };

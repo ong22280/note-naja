@@ -1,3 +1,4 @@
+import { Button } from "antd";
 import Link from "next/link";
 import React from "react";
 
@@ -5,7 +6,7 @@ type Props = {};
 
 const HomeSidebar = (props: Props) => {
   return (
-    <aside className="bg-slate-800 text-white h-screen w-1/4 sm:w-1/5 md:w-1/6 lg:w-1/5 xl:w-1/6">
+    <aside className="bg-slate-800 text-white w-2/12">
       <div className="p-4">
         <Link href="/home">
           <div className="flex text-lg font-bold mb-4 gap-x-1">
@@ -13,11 +14,21 @@ const HomeSidebar = (props: Props) => {
             <h2 className=" text-green-600">Naja</h2>
           </div>
         </Link>
-        <ul>
-          <li>Link 1</li>
-          <li>Link 2</li>
-          <li>Link 3</li>
-          {/* Add more links as needed */}
+        <ul className="flex flex-col space-y-2">
+          <li>
+            <Link href="/home">
+              <Button  className="w-full text-left">
+                Home
+              </Button>
+            </Link>
+          </li>
+          <li>
+            <Link href="/home/setting">
+              <Button className="w-full text-left">
+                Setting
+              </Button>
+            </Link>
+          </li>
         </ul>
       </div>
     </aside>
