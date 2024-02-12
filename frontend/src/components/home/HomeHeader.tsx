@@ -56,7 +56,10 @@ const HomeHeader = (props: Props) => {
             <Popover content={content} title={userInfo?.email} trigger="click">
               <Avatar
                 size={32}
-                src={userInfo?.avatar}
+                src={
+                  userInfo?.avatar ||
+                  "https://api.dicebear.com/7.x/miniavs/svg?seed=1"
+                }
               />
             </Popover>
           </div>

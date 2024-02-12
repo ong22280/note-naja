@@ -1,12 +1,17 @@
 "use client";
 
 import { useAppDispatch } from "../../../hooks/redux-hooks";
-import { signup } from "../../../store/slices/authSlice";
+import { getUser, googleAuth, signup } from "../../../store/slices/authSlice";
 import { showNotification } from "../../../store/slices/notificationSlice";
 import Link from "next/link";
 import { NotificationType } from "@/types/notificationType";
-import { Button, Form, Input  } from "antd";
+import { Button, Form, Input } from "antd";
 import { useRouter } from "next/navigation";
+import {
+  CredentialResponse,
+  GoogleLogin,
+  GoogleOAuthProvider,
+} from "@react-oauth/google";
 
 type FieldType = {
   name?: string;
@@ -15,12 +20,15 @@ type FieldType = {
 };
 
 const Signup = () => {
-
   // --- Redux ---
   const dispatch = useAppDispatch();
 
   // --- Router ---
   const navigate = useRouter();
+
+  // --- Google Auth ---
+  const client_id =
+    "1090445180313-entt1njfbbvobcvl27rna7naiatgtjmj.apps.googleusercontent.com";
 
   const handleSignup = async (values: FieldType) => {
     const { name, email, password } = values;
@@ -53,6 +61,37 @@ const Signup = () => {
       dispatch(
         showNotification({
           message: "Please fill out all the required fields",
+          type: NotificationType.Error,
+        })
+      );
+    }
+  };
+
+  const handleGoogleLogin = async (response: CredentialResponse) => {
+    const { credential } = response;
+    if (!credential) {
+      dispatch(
+        showNotification({
+          message: "Google authentication failed",
+          type: NotificationType.Error,
+        })
+      );
+      return;
+    }
+    const actionResult = await dispatch(googleAuth({ credential, client_id }));
+    if (googleAuth.fulfilled.match(actionResult)) {
+      await dispatch(getUser());
+      dispatch(
+        showNotification({
+          message: "Logged in successfully",
+          type: NotificationType.Success,
+        })
+      );
+      navigate.push("/home");
+    } else if (googleAuth.rejected.match(actionResult)) {
+      dispatch(
+        showNotification({
+          message: "Google authentication failed",
           type: NotificationType.Error,
         })
       );
@@ -107,6 +146,23 @@ const Signup = () => {
             </Button>
           </Form.Item>
         </Form>
+
+        <p className="w-full text-center">or</p>
+        {/* Google Login */}
+        <div className="flex justify-center mb-4">
+          <GoogleOAuthProvider clientId={client_id}>
+            <GoogleLogin
+              onSuccess={(response: CredentialResponse) => {
+                console.log(response);
+                handleGoogleLogin(response);
+              }}
+              onError={() => {
+                console.error("Error");
+              }}
+            />
+          </GoogleOAuthProvider>
+        </div>
+
         <Link
           className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
           href="/log-in"

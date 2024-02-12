@@ -32,6 +32,7 @@ export const login = createAsyncThunk(
       const authToken: AuthTokenStateType = {
         token,
       };
+      console.log("authToken", authToken);
       localStorage.setItem("authToken", JSON.stringify(authToken));
       return token;
     } catch (error) {
@@ -73,6 +74,7 @@ export const googleAuth = createAsyncThunk(
       const authToken: AuthTokenStateType = {
         token,
       };
+      console.log("authToken", authToken);
       localStorage.setItem("authToken", JSON.stringify(authToken));
       return token;
     } catch (error) {
@@ -166,6 +168,7 @@ const authSlice = createSlice({
       })
       .addCase(googleAuth.fulfilled, (state, action: PayloadAction<string>) => {
         state.status = "idle";
+        state.token = action.payload;
       })
       .addCase(googleAuth.rejected, (state, action) => {
         state.status = "failed";

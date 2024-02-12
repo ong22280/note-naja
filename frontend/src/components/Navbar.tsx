@@ -8,7 +8,7 @@ const Navbar = (props: Props) => {
   return (
     <nav className="bg-gray-800 py-4 absolute w-full bg-opacity-50">
       <div className="container mx-auto flex justify-between px-4 opacity-100">
-        <div className="font-bold text-xl flex gap-x-1">
+        <div className="font-bold text-xl flex gap-x-1 text-white">
           Note<p className=" text-green-600">Naja</p>
         </div>
         <ul className="flex gap-x-4 text-white">

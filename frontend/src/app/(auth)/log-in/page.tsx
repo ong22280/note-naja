@@ -27,19 +27,10 @@ const Login = () => {
   // --- Router ---
   const router = useRouter();
 
+  // --- Google Auth ---
   const client_id =
     "1090445180313-entt1njfbbvobcvl27rna7naiatgtjmj.apps.googleusercontent.com";
-  console.log(client_id);
 
-  useEffect(() => {
-    const initClient = () => {
-      gapi.client.init({
-        clientId: client_id,
-        scope: "",
-      });
-    };
-    gapi.load("client:auth2", initClient);
-  }, []);
 
   const handleLogin = async (values: FieldType) => {
     const { email, password } = values;
@@ -102,7 +93,7 @@ const Login = () => {
         })
       );
     }
-  }
+  };
 
   return (
     <>
@@ -149,8 +140,9 @@ const Login = () => {
             </Form.Item>
           </Form>
 
+          <p className="w-full text-center">or</p>
           {/* Google Login */}
-          <div className="flex justify-center">
+          <div className="flex justify-center mb-4">
             <GoogleOAuthProvider clientId={client_id}>
               <GoogleLogin
                 onSuccess={(response: CredentialResponse) => {
