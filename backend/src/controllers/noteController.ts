@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { BadRequestError } from "../middleware/errorMiddleware";
 import asyncHandler from "express-async-handler";
-import * as NoteModel from "../services/noteService"; // เรียกใช้ noteModel.ts ที่เราสร้างขึ้นมา
+import * as NoteModel from "../services/noteService";
 
 const createNote = asyncHandler(async (req: Request, res: Response) => {
   const { title, content, userId, category, tags } = req.body;

@@ -1,4 +1,4 @@
-import { Button } from "antd";
+import { Button, Divider } from "antd";
 import Link from "next/link";
 import React from "react";
 
@@ -14,25 +14,34 @@ const HomeSidebar = (props: Props) => {
             <h2 className=" text-green-600">Naja</h2>
           </div>
         </Link>
-        <ul className="flex flex-col space-y-2">
+        <hr className="bg-white mb-4"></hr>
+        <ul className="flex flex-col space-y-2 ">
           <li>
             <Link href="/home">
-              <Button className="w-full text-left">Home</Button>
+              <Button type="text" className="text-left">
+                <p className="text-white font-bold">Home</p>
+              </Button>
             </Link>
           </li>
           {/* <li>
-            <Link href="/home/">
-              <Button className="w-full text-left">Favorites</Button>
+            <Link href="/home/favorites">
+              <Button type="text" className="text-left">
+                <p className="text-white font-bold">Favorites</p>
+              </Button>
             </Link>
           </li> */}
           <li>
             <Link href="/home/my-notes">
-              <Button className="w-full text-left">My Notes</Button>
+              <Button type="text" className="text-left">
+                <p className="text-white font-bold">My Notes</p>
+              </Button>
             </Link>
           </li>
           <li>
             <Link href="/home/setting">
-              <Button className="w-full text-left">Setting</Button>
+              <Button type="text" className="text-left">
+                <p className="text-white font-bold">Setting</p>
+              </Button>
             </Link>
           </li>
         </ul>

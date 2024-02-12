@@ -14,6 +14,7 @@ async function getUserById(id: number): Promise<User | null> {
     },
     include: {
       notes: true,
+      favorites: true,
     },
   });
   return user;

@@ -4,6 +4,7 @@ import notificationReducer from "./slices/notificationSlice";
 import noteReducer from "./slices/noteSlice";
 import tagReducer from "./slices/tagSlice";
 import logReducer from "./slices/logSlice";
+import favoriteSlice from "./slices/favoriteSlice";
 
 export const makeStore = () =>
   configureStore({
@@ -13,6 +14,7 @@ export const makeStore = () =>
       note: noteReducer,
       tag: tagReducer,
       log: logReducer,
+      favorite: favoriteSlice,
     },
   });
 

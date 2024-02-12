@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import { BadRequestError } from "../middleware/errorMiddleware";
 import asyncHandler from "express-async-handler";
-import * as UserModel from "../services/userService";
+import * as UserService from "../services/userService";
 import { verifyToken } from "../utils/auth";
 
 const getAllUsers = asyncHandler(async (req: Request, res: Response) => {
-  const users = await UserModel.getAllUsers();
+  const users = await UserService.getAllUsers();
 
   res.status(200).json(users);
 });
@@ -18,7 +18,7 @@ const getMe = asyncHandler(async (req: Request, res: Response) => {
     }
     const userId = parseInt(decoded.userId);
 
-    const user = await UserModel.getUserById(userId);
+    const user = await UserService.getUserById(userId);
 
     if (!user) {
       throw new BadRequestError("User not available");
@@ -32,7 +32,7 @@ const getMe = asyncHandler(async (req: Request, res: Response) => {
 const getUserById = asyncHandler(async (req: Request, res: Response) => {
   const userId = parseInt(req.params.id);
 
-  const user = await UserModel.getUserById(userId);
+  const user = await UserService.getUserById(userId);
 
   if (!user) {
     throw new BadRequestError("User not found");
@@ -45,7 +45,7 @@ const updateUser = asyncHandler(async (req: Request, res: Response) => {
   const userId = parseInt(req.params.id);
   const { name } = req.body;
 
-  const updatedUser = await UserModel.updateUser(userId, name);
+  const updatedUser = await UserService.updateUser(userId, name);
 
   res.status(200).json(updatedUser);
 });
@@ -53,7 +53,7 @@ const updateUser = asyncHandler(async (req: Request, res: Response) => {
 const deleteUser = asyncHandler(async (req: Request, res: Response) => {
   const userId = parseInt(req.params.id);
 
-  await UserModel.deleteUser(userId);
+  await UserService.deleteUser(userId);
 
   res.status(200).json({ message: "User deleted successfully" });
 });
@@ -99,7 +99,7 @@ const updateAvatar = async (req: Request, res: Response) => {
       const avatarPath = req.file.path;
 
       // Update the user's avatar path in the database
-      const updatedUser = await UserModel.updateAvatar(userId, avatarPath);
+      const updatedUser = await UserService.updateAvatar(userId, avatarPath);
 
       // Respond with the updated user object
       res.status(200).json(updatedUser);

@@ -99,6 +99,7 @@ async function getAllNotes(): Promise<Note[]> {
       user: true,
       logs: true,
       tags: true,
+      favorites: true,
     },
   });
   return notes;
@@ -113,6 +114,7 @@ async function getNoteById(id: number): Promise<Note | null> {
       user: true,
       logs: true,
       tags: true,
+      favorites: true,
     },
   });
   return note;

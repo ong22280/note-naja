@@ -9,6 +9,7 @@ import {
 } from "@/store/slices/noteSlice";
 import { formattedDate, formattedDateTime } from "@/utils/dateFormat";
 import { Avatar, Button, message, Popconfirm, Spin, Tag, Timeline } from "antd";
+import { MergeOutlined, FormOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
@@ -81,7 +82,9 @@ const Note = (props: Props) => {
             <h2 className="text-2xl font-bold">{noteReducer.note?.title}</h2>
             <div className="flex space-x-2">
               <Button type="primary">
-                <Link href={`/home/note/${note_id}/edit`}>Edit</Link>
+                <Link href={`/home/note/${note_id}/edit`}>
+                  Edit <FormOutlined />
+                </Link>
               </Button>
               {authReducer.userInfo?.id === noteReducer.note?.user.id && (
                 <Popconfirm
@@ -129,7 +132,9 @@ const Note = (props: Props) => {
 
             {/* --- Timeline --- */}
             <div className="col-span-4">
-              <h3 className="text-lg font-bold mb-4">History</h3>
+              <h3 className="text-lg font-bold mb-4">
+                History <MergeOutlined />
+              </h3>
               {noteReducer.note?.logs.length > 0 && (
                 <Timeline>
                   {noteReducer.note.logs.map((log) => {
