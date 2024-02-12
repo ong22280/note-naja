@@ -31,5 +31,6 @@ const authController = __importStar(require("../controllers/authController"));
 const router = express_1.default.Router();
 router.post("/signup", authController.signupUser);
 router.post("/login", authController.authenticateUser);
+router.post("/google-auth", authController.googleAuth);
 router.post("/logout", authController.logoutUser);
 exports.default = router;

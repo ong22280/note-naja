@@ -36,6 +36,30 @@ function createNote(title, content, userId, category, tags) {
             return note;
         }
         else {
+            // check if tag already exists, if not, create tag
+            const existingTags = yield prisma.tag.findMany({
+                where: {
+                    name: {
+                        in: tags,
+                    },
+                },
+            });
+            const existingTagNames = existingTags.map((tag) => tag.name);
+            const newTags = tags.filter((tag) => !existingTagNames.includes(tag));
+            yield prisma.tag.createMany({
+                data: newTags.map((name) => ({
+                    name,
+                })),
+                skipDuplicates: true,
+            });
+            const createdTags = yield prisma.tag.findMany({
+                where: {
+                    name: {
+                        in: tags,
+                    },
+                },
+            });
+            const allTags = [...existingTags, ...createdTags];
             const note = yield prisma.note.create({
                 data: {
                     title,
@@ -43,8 +67,8 @@ function createNote(title, content, userId, category, tags) {
                     userId,
                     category,
                     tags: {
-                        create: tags.map((name) => ({
-                            name,
+                        connect: allTags.map((tag) => ({
+                            id: tag.id,
                         })),
                     },
                     logs: {
@@ -54,8 +78,8 @@ function createNote(title, content, userId, category, tags) {
                                 content: content,
                                 category: category,
                                 tags: {
-                                    create: tags.map((name) => ({
-                                        name,
+                                    connect: allTags.map((tag) => ({
+                                        id: tag.id,
                                     })),
                                 },
                             },
@@ -122,7 +146,77 @@ function updateNote(id, title, content, category, tags) {
             });
             return updatedNote;
         }
+        else if (tags.length === 0) {
+            const updatedNote = yield prisma.note.update({
+                where: {
+                    id,
+                },
+                data: {
+                    title,
+                    content,
+                    category,
+                    tags: { set: [] },
+                },
+            });
+            // create log
+            yield prisma.log.create({
+                data: {
+                    title: title,
+                    content: content,
+                    noteId: id,
+                    category: category,
+                },
+            });
+            return updatedNote;
+        }
         else {
+            // before update, check if tag is unused, if unused, disconnect tag
+            const unusedTags = yield prisma.tag.findMany({
+                where: {
+                    name: {
+                        notIn: tags,
+                    },
+                },
+            });
+            console.log("unusedTags: ", unusedTags);
+            // check if tag already exists, if not, create tag
+            const existingTags = yield prisma.tag.findMany({
+                where: {
+                    name: {
+                        in: tags,
+                    },
+                },
+            });
+            const existingTagNames = existingTags.map((tag) => tag.name);
+            const newTags = tags.filter((tag) => !existingTagNames.includes(tag));
+            if (unusedTags.length > 0) {
+                yield prisma.note.update({
+                    where: {
+                        id,
+                    },
+                    data: {
+                        tags: {
+                            disconnect: unusedTags.map((tag) => ({
+                                id: tag.id,
+                            })),
+                        },
+                    },
+                });
+            }
+            yield prisma.tag.createMany({
+                data: newTags.map((name) => ({
+                    name,
+                })),
+                skipDuplicates: true,
+            });
+            const createdTags = yield prisma.tag.findMany({
+                where: {
+                    name: {
+                        in: tags,
+                    },
+                },
+            });
+            const allTags = [...existingTags, ...createdTags];
             const updatedNote = yield prisma.note.update({
                 where: {
                     id,
@@ -132,8 +226,8 @@ function updateNote(id, title, content, category, tags) {
                     content,
                     category,
                     tags: {
-                        create: tags.map((name) => ({
-                            name,
+                        connect: allTags.map((tag) => ({
+                            id: tag.id,
                         })),
                     },
                 },
@@ -146,8 +240,8 @@ function updateNote(id, title, content, category, tags) {
                     noteId: id,
                     category: category,
                     tags: {
-                        create: tags.map((name) => ({
-                            name,
+                        connect: allTags.map((tag) => ({
+                            id: tag.id,
                         })),
                     },
                 },
@@ -159,6 +253,11 @@ function updateNote(id, title, content, category, tags) {
 exports.updateNote = updateNote;
 function deleteNote(id) {
     return __awaiter(this, void 0, void 0, function* () {
+        yield prisma.log.deleteMany({
+            where: {
+                noteId: id,
+            },
+        });
         yield prisma.note.delete({
             where: {
                 id,

@@ -35,7 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteTag = exports.updateTag = exports.getTagById = exports.getAllTags = exports.createTag = void 0;
+exports.deleteTag = exports.getTagByName = exports.getAllTags = exports.createTag = void 0;
 const errorMiddleware_1 = require("../middleware/errorMiddleware");
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const TagModel = __importStar(require("../services/tagService"));
@@ -50,25 +50,18 @@ const getAllTags = (0, express_async_handler_1.default)((req, res) => __awaiter(
     res.status(200).json(tags);
 }));
 exports.getAllTags = getAllTags;
-const getTagById = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const tagId = parseInt(req.params.id);
-    const tag = yield TagModel.getTagById(tagId);
+const getTagByName = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const name = req.params.name;
+    const tag = yield TagModel.getTagByName(name);
     if (!tag) {
         throw new errorMiddleware_1.BadRequestError("Tag not found");
     }
     res.status(200).json(tag);
 }));
-exports.getTagById = getTagById;
-const updateTag = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const tagId = parseInt(req.params.id);
-    const { name } = req.body;
-    const updatedTag = yield TagModel.updateTag(tagId, name);
-    res.status(200).json(updatedTag);
-}));
-exports.updateTag = updateTag;
+exports.getTagByName = getTagByName;
 const deleteTag = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const tagId = parseInt(req.params.id);
-    yield TagModel.deleteTag(tagId);
+    const name = req.params.name;
+    yield TagModel.deleteTag(name);
     res.status(200).json({ message: "Tag deleted successfully" });
 }));
 exports.deleteTag = deleteTag;

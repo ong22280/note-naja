@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllNotesOfTag = exports.deleteTag = exports.updateTag = exports.getTagById = exports.getAllTags = exports.createTag = void 0;
+exports.getAllNotesOfTag = exports.deleteTag = exports.getTagByName = exports.getAllTags = exports.createTag = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 function createTag(name) {
@@ -41,11 +41,11 @@ function getAllTags() {
     });
 }
 exports.getAllTags = getAllTags;
-function getTagById(id) {
+function getTagByName(name) {
     return __awaiter(this, void 0, void 0, function* () {
         const tag = yield prisma.tag.findUnique({
             where: {
-                id,
+                name,
             },
             include: {
                 notes: true,
@@ -54,36 +54,22 @@ function getTagById(id) {
         return tag;
     });
 }
-exports.getTagById = getTagById;
-function updateTag(id, name) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const updatedTag = yield prisma.tag.update({
-            where: {
-                id,
-            },
-            data: {
-                name,
-            },
-        });
-        return updatedTag;
-    });
-}
-exports.updateTag = updateTag;
-function deleteTag(id) {
+exports.getTagByName = getTagByName;
+function deleteTag(name) {
     return __awaiter(this, void 0, void 0, function* () {
         yield prisma.tag.delete({
             where: {
-                id,
+                name,
             },
         });
     });
 }
 exports.deleteTag = deleteTag;
-function getAllNotesOfTag(id) {
+function getAllNotesOfTag(name) {
     return __awaiter(this, void 0, void 0, function* () {
         const tag = yield prisma.tag.findUnique({
             where: {
-                id,
+                name,
             },
             include: {
                 notes: true,

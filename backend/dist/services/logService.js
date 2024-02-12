@@ -47,7 +47,12 @@ function createLog(title, content, noteId, category, tags) {
 exports.createLog = createLog;
 function getAllLogs() {
     return __awaiter(this, void 0, void 0, function* () {
-        const logs = yield prisma.log.findMany();
+        const logs = yield prisma.log.findMany({
+            include: {
+                note: true,
+                tags: true,
+            },
+        });
         return logs;
     });
 }
@@ -60,6 +65,7 @@ function getLogById(id) {
             },
             include: {
                 note: true,
+                tags: true,
             },
         });
         return log;

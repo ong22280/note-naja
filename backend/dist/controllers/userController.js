@@ -35,7 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUser = exports.updateUser = exports.getUserById = exports.getMe = exports.getAllUsers = void 0;
+exports.updateAvatar = exports.deleteUser = exports.updateUser = exports.getUserById = exports.getMe = exports.getAllUsers = void 0;
 const errorMiddleware_1 = require("../middleware/errorMiddleware");
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const UserModel = __importStar(require("../services/userService"));
@@ -74,8 +74,8 @@ const getUserById = (0, express_async_handler_1.default)((req, res) => __awaiter
 exports.getUserById = getUserById;
 const updateUser = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = parseInt(req.params.id);
-    const { name, email, password } = req.body;
-    const updatedUser = yield UserModel.updateUser(userId, name, email, password);
+    const { name } = req.body;
+    const updatedUser = yield UserModel.updateUser(userId, name);
     res.status(200).json(updatedUser);
 }));
 exports.updateUser = updateUser;
@@ -85,3 +85,47 @@ const deleteUser = (0, express_async_handler_1.default)((req, res) => __awaiter(
     res.status(200).json({ message: "User deleted successfully" });
 }));
 exports.deleteUser = deleteUser;
+const path_1 = __importDefault(require("path"));
+const multer_1 = __importDefault(require("multer"));
+// Set up multer storage configuration
+const storage = multer_1.default.diskStorage({
+    destination: function (req, file, cb) {
+        // ใช้ path.join เพื่อรวมเส้นทางโฟลเดอร์เข้าด้วยกัน
+        cb(null, path_1.default.join(__dirname, "../../uploads"));
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.fieldname + "-" + Date.now() + path_1.default.extname(file.originalname));
+    },
+});
+// Initialize multer upload middleware
+const upload = (0, multer_1.default)({ storage: storage }).single("avatar");
+const updateAvatar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // Handle the upload using multer middleware
+    upload(req, res, function (err) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (err) {
+                // Handle any upload error
+                return res.status(500).json({ message: "Avatar upload failed" });
+            }
+            try {
+                // Get the user ID from request parameters
+                const userId = parseInt(req.params.id);
+                // Check if req.file is defined before accessing its properties
+                if (!req.file) {
+                    return res.status(400).json({ message: "No file uploaded" });
+                }
+                // Get the file path of the uploaded avatar
+                const avatarPath = req.file.path;
+                // Update the user's avatar path in the database
+                const updatedUser = yield UserModel.updateAvatar(userId, avatarPath);
+                // Respond with the updated user object
+                res.status(200).json(updatedUser);
+            }
+            catch (error) {
+                // Handle any other errors
+                res.status(500).json({ message: "Internal server error" });
+            }
+        });
+    });
+});
+exports.updateAvatar = updateAvatar;

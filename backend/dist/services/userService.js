@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUser = exports.updateUser = exports.getUserById = exports.getAllUsers = void 0;
+exports.updateAvatar = exports.deleteUser = exports.updateUser = exports.getUserById = exports.getAllUsers = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 function getAllUsers() {
@@ -33,7 +33,7 @@ function getUserById(id) {
     });
 }
 exports.getUserById = getUserById;
-function updateUser(id, name, email, password) {
+function updateUser(id, name) {
     return __awaiter(this, void 0, void 0, function* () {
         const updatedUser = yield prisma.user.update({
             where: {
@@ -41,8 +41,6 @@ function updateUser(id, name, email, password) {
             },
             data: {
                 name,
-                email,
-                password,
             },
         });
         return updatedUser;
@@ -59,3 +57,23 @@ function deleteUser(id) {
     });
 }
 exports.deleteUser = deleteUser;
+function updateAvatar(userId, avatarPath) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const updatedUser = yield prisma.user.update({
+                where: {
+                    id: userId,
+                },
+                data: {
+                    avatar: avatarPath, // Set the avatar path
+                },
+            });
+            return updatedUser;
+        }
+        catch (error) {
+            console.error("Error updating avatar:", error);
+            return null;
+        }
+    });
+}
+exports.updateAvatar = updateAvatar;
