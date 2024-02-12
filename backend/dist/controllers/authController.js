@@ -12,12 +12,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.logoutUser = exports.authenticateUser = exports.signupUser = void 0;
+exports.logoutUser = exports.googleAuth = exports.authenticateUser = exports.signupUser = void 0;
 const client_1 = require("@prisma/client");
 const auth_1 = require("../utils/auth");
 const errorMiddleware_1 = require("../middleware/errorMiddleware");
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const google_auth_library_1 = require("google-auth-library");
+const client = new google_auth_library_1.OAuth2Client();
 const prisma = new client_1.PrismaClient();
 const signupUser = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, email, password } = req.body;
@@ -57,17 +59,70 @@ const authenticateUser = (0, express_async_handler_1.default)((req, res) => __aw
     const user = yield prisma.user.findUnique({
         where: { email },
     });
-    if (!user || !(yield bcryptjs_1.default.compare(password, user.password))) {
-        throw new errorMiddleware_1.AuthenticationError("User not found / password incorrect");
+    if (user === null || user === void 0 ? void 0 : user.password) {
+        if (!user || !(yield bcryptjs_1.default.compare(password, user.password))) {
+            throw new errorMiddleware_1.AuthenticationError("User not found / password incorrect");
+        }
     }
-    const access_token = (0, auth_1.generateToken)(res, user.id.toString());
-    const refresh_token = (0, auth_1.refreshToken)(res, user.id.toString());
-    res.status(200).json({
-        access_token,
-        refresh_token,
-    });
+    if (user !== null) {
+        const access_token = (0, auth_1.generateToken)(res, user.id.toString());
+        const refresh_token = (0, auth_1.refreshToken)(res, user.id.toString());
+        res.status(200).json({
+            access_token,
+            refresh_token,
+        });
+    }
 }));
 exports.authenticateUser = authenticateUser;
+const googleAuth = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { credential, client_id } = req.body;
+    try {
+        const ticket = yield client.verifyIdToken({
+            idToken: credential,
+            audience: client_id,
+        });
+        const payload = ticket.getPayload();
+        if (payload === undefined) {
+            throw new errorMiddleware_1.AuthenticationError("Google authentication failed");
+        }
+        // if user exists, generate token and send it
+        const existingUser = yield prisma.user.findUnique({
+            where: { email: payload["email"] },
+        });
+        if (existingUser) {
+            const access_token = (0, auth_1.generateToken)(res, existingUser.id.toString());
+            const refresh_token = (0, auth_1.refreshToken)(res, existingUser.id.toString());
+            res.status(200).json({
+                access_token,
+                refresh_token,
+            });
+            return;
+        }
+        else {
+            if (payload["email"] === undefined || payload["name"] === undefined) {
+                throw new errorMiddleware_1.AuthenticationError("Google authentication failed");
+            }
+            const newUser = yield prisma.user.create({
+                data: {
+                    avatar: payload["picture"],
+                    name: payload["name"],
+                    email: payload["email"],
+                },
+            });
+            const access_token = (0, auth_1.generateToken)(res, newUser.id.toString());
+            const refresh_token = (0, auth_1.refreshToken)(res, newUser.id.toString());
+            res.status(200).json({
+                access_token,
+                refresh_token,
+            });
+            return;
+        }
+    }
+    catch (err) {
+        res.status(400).json({ err });
+    }
+}));
+exports.googleAuth = googleAuth;
 const logoutUser = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     (0, auth_1.clearToken)(res);
     res.status(200).json({ message: "Successfully logged out" });

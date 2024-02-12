@@ -9,7 +9,7 @@ const errorMiddleware_1 = require("../middleware/errorMiddleware");
 const generateToken = (res, userId) => {
     const jwtSecret = process.env.ACCESS_TOKEN_SECRET || "";
     const token = jsonwebtoken_1.default.sign({ userId }, jwtSecret, {
-        expiresIn: "1h",
+        expiresIn: "1d",
         algorithm: "HS256",
     });
     return token;
