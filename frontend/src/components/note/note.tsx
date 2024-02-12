@@ -55,15 +55,17 @@ const Note = (props: NoteProps) => {
           }
         />
         <div className="mt-2 flex flex-col gap-y-2">
-          <div>
-            {props.tags.length > 0 ? (
-              props.tags.map((tag) => {
-                return <Tag key={tag.id}>{tag.name}</Tag>;
-              })
-            ) : (
-              <p>No tag</p>
-            )}
-          </div>
+          {props.tags != undefined && (
+            <div>
+              {props.tags.length > 0 ? (
+                props.tags.map((tag) => {
+                  return <Tag key={tag.id}>{tag.name}</Tag>;
+                })
+              ) : (
+                <p>No tag</p>
+              )}
+            </div>
+          )}
           <p className="border-2 rounded-md w-full px-2 text-center text-green-600">
             {props.category}
           </p>

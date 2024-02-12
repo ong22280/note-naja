@@ -17,16 +17,22 @@ const HomeSidebar = (props: Props) => {
         <ul className="flex flex-col space-y-2">
           <li>
             <Link href="/home">
-              <Button  className="w-full text-left">
-                Home
-              </Button>
+              <Button className="w-full text-left">Home</Button>
+            </Link>
+          </li>
+          {/* <li>
+            <Link href="/home/">
+              <Button className="w-full text-left">Favorites</Button>
+            </Link>
+          </li> */}
+          <li>
+            <Link href="/home/my-notes">
+              <Button className="w-full text-left">My Notes</Button>
             </Link>
           </li>
           <li>
             <Link href="/home/setting">
-              <Button className="w-full text-left">
-                Setting
-              </Button>
+              <Button className="w-full text-left">Setting</Button>
             </Link>
           </li>
         </ul>
