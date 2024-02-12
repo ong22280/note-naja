@@ -5,6 +5,11 @@ export type UserType = {
   password: string;
 };
 
+export type UserUpdateType = {
+  id: number;
+  name: string;
+}
+
 export type NewUserType = UserType & {
   avatar?: string;
   name: string;
