@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { Button, Pagination, Select, Empty, Spin } from "antd";
-import { getAllNotes } from "@/store/slices/noteSlice";
-import { useAppDispatch, useAppSelector } from "@/hooks/redux-hooks";
+import { useAppSelector } from "@/hooks/redux-hooks";
 import Note from "../note/note";
 import { CategoryEnumType } from "@/types/categoryTypes";
 import Link from "next/link";
@@ -13,7 +12,6 @@ type Props = {};
 
 const MyNoteList = (props: Props) => {
   // --- Redux ---
-  const dispatch = useAppDispatch();
   const authReducer = useAppSelector(authSelector);
   const { userInfo } = authReducer;
 

@@ -5,6 +5,7 @@ import { getLogById, logSelector } from "@/store/slices/logSlice";
 import { getNoteById, noteSelector } from "@/store/slices/noteSlice";
 import { formattedDateTime } from "@/utils/dateFormat";
 import { Avatar, Button, Spin, Tag, Timeline } from "antd";
+import { MergeOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import React, { useEffect } from "react";
 
@@ -106,7 +107,9 @@ const HistoryNote = (props: Props) => {
 
             {/* --- Timeline --- */}
             <div className="col-span-4">
-              <h3 className="text-lg font-bold mb-4">History</h3>
+              <h3 className="text-lg font-bold mb-4">
+                History <MergeOutlined />
+              </h3>
               {noteReducer.note?.logs.length > 0 && (
                 <Timeline>
                   {noteReducer.note.logs.map((log) => {
