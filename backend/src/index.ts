@@ -36,6 +36,10 @@ app.use(
   })
 );
 
+app.use(
+  express.static("../uploads")
+)
+
 app.use(bodyParser.json()); // To recognize the req obj as a json obj
 app.use(bodyParser.urlencoded({ extended: true })); // To recognize the req obj as strings or arrays. extended true to handle nested objects also
 

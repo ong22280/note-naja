@@ -144,6 +144,41 @@ export const updateUser = createAsyncThunk(
   }
 );
 
+export const uploadAvatar = createAsyncThunk(
+  "auth/uploadAvatar",
+  async (data: any, { rejectWithValue }) => {
+    try {
+      // Use FormData to prepare the data for uploading
+      const formData = new FormData();
+      formData.append("avatar", data.avatarFile);
+      // Make a POST request to the server to upload the avatar
+      const response = await axiosInstance.put(
+        `/users/${data.id}/avatar`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      const user = response.data;
+      let authToken = JSON.parse(localStorage.getItem("authToken") || "");
+      const newAuthToken = {
+        token: authToken.token,
+        userInfo: user,
+      };
+      localStorage.setItem("authToken", JSON.stringify(newAuthToken));
+      return user;
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) {
+        const errorResponse = error.response.data;
+        return rejectWithValue(errorResponse);
+      }
+      throw error;
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,

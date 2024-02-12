@@ -13,4 +13,6 @@ router.put('/:id', userController.updateUser);
 
 router.delete('/:id', userController.deleteUser);
 
+router.put("/:id/avatar", userController.updateAvatar);
+
 export default router;
