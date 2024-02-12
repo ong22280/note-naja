@@ -1,5 +1,6 @@
 import { UserBasicInfoType } from "./authTypes";
 import { CategoryEnumType } from "./categoryTypes";
+import { FavoriteType } from "./favoriteTypes";
 import { LogType } from "./logTypes";
 import { TagType } from "./tagTypes";
 
@@ -13,6 +14,7 @@ export type NoteType = {
   logs: LogType[];
   category: CategoryEnumType;
   tags: TagType[];
+  favorites: FavoriteType[];
 };
 
 export type NewNote = {

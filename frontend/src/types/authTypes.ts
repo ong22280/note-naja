@@ -1,3 +1,4 @@
+import { FavoriteType } from "./favoriteTypes";
 import { NoteType } from "./noteTypes";
 
 export type UserType = {
@@ -22,6 +23,7 @@ export type UserBasicInfoType = {
   email: string;
   password: string;
   notes: NoteType[];
+  favorites: FavoriteType[];
   createdAt: Date;
   updatedAt: Date;
 };
