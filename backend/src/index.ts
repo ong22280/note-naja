@@ -9,6 +9,7 @@ import { errorHandler } from "./middleware/errorMiddleware";
 import logRouter from "./routes/logRouter";
 import noteRouter from "./routes/noteRouter";
 import tagRouter from "./routes/tagRouter";
+import favoriteRouter from "./routes/favoriteRouter";
 
 dotenv.config();
 
@@ -48,9 +49,10 @@ app.listen(port, () => {
 });
 
 app.use(authRouter);
-app.use("/users", authenticate, userRouter);
+app.use("favorites", authenticate, favoriteRouter);
 app.use("/logs", authenticate, logRouter);
 app.use("/notes", authenticate, noteRouter);
 app.use("/tags", authenticate, tagRouter);
+app.use("/users", authenticate, userRouter);
 
 app.use(errorHandler);
