@@ -18,6 +18,9 @@ const HomeHeader = (props: Props) => {
   const authReducer = useSelector(authSelector);
   const { userInfo, status, error } = authReducer;
 
+  // --- Avatar ---
+  
+
   // --- Router ---
   const navigate = useRouter();
 

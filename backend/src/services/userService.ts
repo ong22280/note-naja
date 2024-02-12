@@ -39,4 +39,24 @@ async function deleteUser(id: number): Promise<void> {
   });
 }
 
-export { getAllUsers, getUserById, updateUser, deleteUser };
+async function updateAvatar(
+  userId: number,
+  avatarPath: string
+): Promise<User | null> {
+  try {
+    const updatedUser = await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        avatar: avatarPath, // Set the avatar path
+      },
+    });
+    return updatedUser;
+  } catch (error) {
+    console.error("Error updating avatar:", error);
+    return null;
+  }
+}
+
+export { getAllUsers, getUserById, updateUser, deleteUser, updateAvatar };

@@ -1,8 +1,20 @@
 "use client";
 
-import { authSelector, updateUser } from "@/store/slices/authSlice";
+import {
+  authSelector,
+  updateUser,
+  uploadAvatar,
+} from "@/store/slices/authSlice";
 import { showNotification } from "@/store/slices/notificationSlice";
-import { Form, Input, Button } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  Avatar,
+  message,
+  Upload,
+  UploadProps,
+} from "antd";
 import React from "react";
 import { NotificationType } from "@/types/notificationType";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,7 +42,7 @@ const SettingPage = (props: Props) => {
 
   const onFinish = async (values: any) => {
     try {
-      const data:UserUpdateType = {
+      const data: UserUpdateType = {
         id: authReducer.userInfo?.id,
         ...values,
       };
@@ -56,9 +68,53 @@ const SettingPage = (props: Props) => {
     }
   };
 
+  const propsUpload: UploadProps = {
+    name: "avatar",
+    action: `http://localhost:3000`, // Endpoint to handle avatar upload
+    headers: {
+      authorization: "Bearer " + authReducer.token,
+    },
+    onChange(info) {
+      if (info.file.status !== "uploading") {
+        console.log(info.file, info.fileList);
+      }
+      if (info.file.status === "done") {
+        message.success(`${info.file.name} file uploaded successfully`);
+      } else if (info.file.status === "error") {
+        message.error(`${info.file.name} file upload failed.`);
+      }
+    },
+  };
+
+  const handleAvatarUpload = (info: any) => {
+    if (info.file.status === "done") {
+      const data = {
+        id: authReducer.userInfo?.id,
+        avatarFile: info.file.originFileObj,
+      };
+      // Dispatch the uploadAvatar action with the selected file
+      dispatch(uploadAvatar(data) as any);
+    } else if (info.file.status === "error") {
+      message.error(`${info.file.name} file upload failed.`);
+    }
+  };
+
   return (
     <>
       <h2 className="text-2xl font-bold mb-2">Edit Profile</h2>
+      <div className="ml-48 mb-4">
+        <div className=" cursor-pointer p-2 border-2 rounded-full w-fit">
+          <Upload {...propsUpload} onChange={handleAvatarUpload}>
+            <Avatar
+              size={128}
+              src={
+                authReducer.userInfo?.avatar ||
+                "https://api.dicebear.com/7.x/miniavs/svg?seed=1"
+              }
+            />
+          </Upload>
+        </div>
+      </div>
       <Form
         name="basic"
         labelCol={{ span: 8 }}
