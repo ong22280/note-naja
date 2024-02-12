@@ -43,9 +43,9 @@ const getUserById = asyncHandler(async (req: Request, res: Response) => {
 
 const updateUser = asyncHandler(async (req: Request, res: Response) => {
   const userId = parseInt(req.params.id);
-  const { name, email, password } = req.body;
+  const { name } = req.body;
 
-  const updatedUser = await UserModel.updateUser(userId, name, email, password);
+  const updatedUser = await UserModel.updateUser(userId, name);
 
   res.status(200).json(updatedUser);
 });

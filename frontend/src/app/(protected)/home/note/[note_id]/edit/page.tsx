@@ -14,7 +14,6 @@ import { showNotification } from "@/store/slices/notificationSlice";
 import { NotificationType } from "@/types/notificationType";
 import { useRouter } from "next/navigation";
 import { tagSelector } from "@/store/slices/tagSlice";
-const { Option } = Select;
 
 const RichTextEditor = dynamic(() => import("@/components/rich-text-editor"), {
   ssr: false,
@@ -88,7 +87,8 @@ const EditNote = (props: Props) => {
       const options: any = Array.from(optionsSet);
       setInitOptions(options);
     }
-  }, [note_id, dispatch]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const onFinish = async (values: any) => {
     try {

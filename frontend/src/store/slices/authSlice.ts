@@ -2,7 +2,14 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axiosInstance from "../../api/axiosInstance";
 import { AxiosError } from "axios";
 import { RootState } from "@/store/store";
-import { AuthApiStateType, AuthTokenStateType, NewUserType, UserType, UserBasicInfoType } from "@/types/authTypes";
+import {
+  AuthApiStateType,
+  AuthTokenStateType,
+  NewUserType,
+  UserType,
+  UserBasicInfoType,
+  UserUpdateType,
+} from "@/types/authTypes";
 
 const initialState: AuthApiStateType = {
   token:
@@ -26,6 +33,7 @@ export const login = createAsyncThunk(
       const authToken: AuthTokenStateType = {
         token,
       };
+      console.log("authToken", authToken);
       localStorage.setItem("authToken", JSON.stringify(authToken));
       return token;
     } catch (error) {
@@ -45,6 +53,31 @@ export const signup = createAsyncThunk(
       const response = await axiosInstance.post("/signup", data);
       const resData = response.data;
       return resData;
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) {
+        const errorResponse = error.response.data;
+        return rejectWithValue(errorResponse);
+      }
+      throw error;
+    }
+  }
+);
+
+export const googleAuth = createAsyncThunk(
+  "auth/google-auth",
+  async (
+    data: { credential: string; client_id: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const { data: response } = await axiosInstance.post("/google-auth", data);
+      const token: string = response.access_token;
+      const authToken: AuthTokenStateType = {
+        token,
+      };
+      console.log("authToken", authToken);
+      localStorage.setItem("authToken", JSON.stringify(authToken));
+      return token;
     } catch (error) {
       if (error instanceof AxiosError && error.response) {
         const errorResponse = error.response.data;
@@ -89,6 +122,28 @@ export const getUser = createAsyncThunk("auth/me", async () => {
   }
 });
 
+export const updateUser = createAsyncThunk(
+  "user/update",
+  async (data: UserUpdateType, { rejectWithValue }) => {
+    try {
+      const { data: user } = await axiosInstance.put(`/users/${data.id}`, data);
+      let authToken = JSON.parse(localStorage.getItem("authToken") || "");
+      const newAuthToken = {
+        token: authToken.token,
+        userInfo: user,
+      };
+      localStorage.setItem("authToken", JSON.stringify(newAuthToken));
+      return user;
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) {
+        const errorResponse = error.response.data;
+        return rejectWithValue(errorResponse);
+      }
+      throw error;
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -130,6 +185,25 @@ const authSlice = createSlice({
         }
       })
 
+      .addCase(googleAuth.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(googleAuth.fulfilled, (state, action: PayloadAction<string>) => {
+        state.status = "idle";
+        state.token = action.payload;
+      })
+      .addCase(googleAuth.rejected, (state, action) => {
+        state.status = "failed";
+        if (action.payload) {
+          state.error =
+            (action.payload as ErrorResponse).message ||
+            "Google authentication failed";
+        } else {
+          state.error = action.error.message || "Google authentication failed";
+        }
+      })
+
       .addCase(logout.pending, (state) => {
         state.status = "loading";
         state.error = null;
@@ -158,6 +232,25 @@ const authSlice = createSlice({
         state.userInfo = action.payload;
       })
       .addCase(getUser.rejected, (state, action) => {
+        state.status = "failed";
+        if (action.payload) {
+          state.error =
+            (action.payload as ErrorResponse).message ||
+            "Get user profile data failed";
+        } else {
+          state.error = action.error.message || "Get user profile data failed";
+        }
+      })
+
+      .addCase(updateUser.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.status = "idle";
+        state.userInfo = action.payload;
+      })
+      .addCase(updateUser.rejected, (state, action) => {
         state.status = "failed";
         if (action.payload) {
           state.error =

@@ -175,7 +175,6 @@ async function updateNote(
 
     return updatedNote;
   } else {
-    console.log(tags);
 
     // before update, check if tag is unused, if unused, disconnect tag
     const unusedTags = await prisma.tag.findMany({
