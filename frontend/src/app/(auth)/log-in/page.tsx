@@ -12,8 +12,6 @@ import {
   GoogleLogin,
   GoogleOAuthProvider,
 } from "@react-oauth/google";
-import { useEffect } from "react";
-import { gapi } from "gapi-script";
 
 type FieldType = {
   email?: string;
@@ -31,10 +29,8 @@ const Login = () => {
   const client_id =
     "1090445180313-entt1njfbbvobcvl27rna7naiatgtjmj.apps.googleusercontent.com";
 
-
   const handleLogin = async (values: FieldType) => {
     const { email, password } = values;
-    // This is only a basic validation of inputs. Improve this as needed.
     if (email && password) {
       const actionResult = await dispatch(login({ email, password }));
       if (login.fulfilled.match(actionResult)) {
@@ -118,7 +114,10 @@ const Login = () => {
             <Form.Item<FieldType>
               label="Email"
               name="email"
-              rules={[{ required: true, message: "Please input your email!" }]}
+              rules={[
+                { required: true, message: "Please input your email!" },
+                { type: "email", message: "Please input a valid email!" },
+              ]}
             >
               <Input />
             </Form.Item>
@@ -128,6 +127,7 @@ const Login = () => {
               name="password"
               rules={[
                 { required: true, message: "Please input your password!" },
+                { min: 4, message: "Password must be at least 4 characters" },
               ]}
             >
               <Input.Password />

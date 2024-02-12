@@ -32,7 +32,6 @@ const Signup = () => {
 
   const handleSignup = async (values: FieldType) => {
     const { name, email, password } = values;
-    // This is only a basic validation of inputs. Improve this as needed.
     if (name && email && password) {
       const actionResult = await dispatch(
         signup({
@@ -120,14 +119,20 @@ const Signup = () => {
           <Form.Item<FieldType>
             label="name"
             name="name"
-            rules={[{ required: true, message: "Please input your name!" }]}
+            rules={[
+              { required: true, message: "Please input your name!" },
+              { min: 3, message: "Name must be at least 3 characters long" },
+            ]}
           >
             <Input />
           </Form.Item>
           <Form.Item<FieldType>
             label="Email"
             name="email"
-            rules={[{ required: true, message: "Please input your email!" }]}
+            rules={[
+              { required: true, message: "Please input your email!" },
+              { type: "email", message: "Please input a valid email!" },
+            ]}
           >
             <Input />
           </Form.Item>
@@ -135,7 +140,10 @@ const Signup = () => {
           <Form.Item<FieldType>
             label="Password"
             name="password"
-            rules={[{ required: true, message: "Please input your password!" }]}
+            rules={[
+              { required: true, message: "Please input your password!" },
+              { min: 4, message: "Password must be at least 4 characters" },
+            ]}
           >
             <Input.Password />
           </Form.Item>

@@ -14,6 +14,7 @@ import { showNotification } from "@/store/slices/notificationSlice";
 import { NotificationType } from "@/types/notificationType";
 import { useRouter } from "next/navigation";
 import { tagSelector } from "@/store/slices/tagSlice";
+import { CategoryEnumType } from "@/types/categoryTypes";
 
 const RichTextEditor = dynamic(() => import("@/components/rich-text-editor"), {
   ssr: false,
@@ -21,6 +22,8 @@ const RichTextEditor = dynamic(() => import("@/components/rich-text-editor"), {
 
 type FieldType = {
   title: string;
+  category: CategoryEnumType;
+  tags: string[];
   content: string;
 };
 
@@ -41,10 +44,10 @@ const EditNote = (props: Props) => {
   const navigate = useRouter();
 
   // --- Redux ---
+  const dispatch = useAppDispatch();
   const authReducer = useAppSelector(authSelector);
   const noteReducer = useAppSelector(noteSelector);
   const tagReducer = useAppSelector(tagSelector);
-  const dispatch = useAppDispatch();
 
   // --- Initial Values ---
   const initialValues = {
@@ -87,7 +90,7 @@ const EditNote = (props: Props) => {
       const options: any = Array.from(optionsSet);
       setInitOptions(options);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onFinish = async (values: any) => {
@@ -141,7 +144,7 @@ const EditNote = (props: Props) => {
           <Input />
         </Form.Item>
 
-        <Form.Item
+        <Form.Item<FieldType>
           label="CategoryType"
           name="category"
           rules={[{ required: true, message: "Please select an option!" }]}
@@ -153,7 +156,7 @@ const EditNote = (props: Props) => {
           </Select>
         </Form.Item>
 
-        <Form.Item label="Tags" name="tags">
+        <Form.Item<FieldType> label="Tags" name="tags">
           <Select
             mode="tags"
             style={{ width: "100%" }}
@@ -164,7 +167,7 @@ const EditNote = (props: Props) => {
           ></Select>
         </Form.Item>
 
-        <Form.Item label="content" name="content">
+        <Form.Item<FieldType> label="content" name="content">
           <RichTextEditor initialValue={initialValues.content} />
         </Form.Item>
 

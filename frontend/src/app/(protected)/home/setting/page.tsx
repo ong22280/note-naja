@@ -70,7 +70,7 @@ const SettingPage = (props: Props) => {
 
   const propsUpload: UploadProps = {
     name: "avatar",
-    action: `http://localhost:3000`, // Endpoint to handle avatar upload
+    action: `http://localhost:3000`,
     headers: {
       authorization: "Bearer " + authReducer.token,
     },
@@ -127,7 +127,10 @@ const SettingPage = (props: Props) => {
         <Form.Item<FieldType>
           label="Name"
           name="name"
-          rules={[{ required: true, message: "Please input your username!" }]}
+          rules={[
+            { required: true, message: "Please input your username!" },
+            { min: 3, message: "Name must be at least 3 characters long" },
+          ]}
         >
           <Input />
         </Form.Item>

@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Button, Form, Input, Select, SelectProps } from "antd";
+import { Button, Form, Input, Select } from "antd";
 import dynamic from "next/dynamic";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux-hooks";
 import { authSelector } from "@/store/slices/authSlice";
-import { createNote, noteSelector } from "@/store/slices/noteSlice";
+import { createNote } from "@/store/slices/noteSlice";
 import { showNotification } from "@/store/slices/notificationSlice";
 import { NotificationType } from "@/types/notificationType";
 import { useRouter } from "next/navigation";
@@ -18,8 +18,8 @@ const RichTextEditor = dynamic(() => import("@/components/rich-text-editor"), {
 
 type FieldType = {
   title: string;
-  content: string;
   category: CategoryEnumType;
+  content: string;
   tags: string[];
 };
 
@@ -32,9 +32,9 @@ type Props = {};
 
 const CreateNote = (props: Props) => {
   // --- Redux ---
+  const dispatch = useAppDispatch();
   const authReducer = useAppSelector(authSelector);
   const tagReducer = useAppSelector(tagSelector);
-  const dispatch = useAppDispatch();
 
   // --- Router ---
   const navigate = useRouter();
@@ -124,10 +124,12 @@ const CreateNote = (props: Props) => {
               <Input />
             </Form.Item>
 
-            <Form.Item
+            <Form.Item<FieldType>
               label="CategoryType"
               name="category"
-              rules={[{ required: true, message: "Please select an option!" }]}
+              rules={[
+                { required: true, message: "Please select an category!" },
+              ]}
             >
               <Select>
                 <Select.Option value="WORK">Work</Select.Option>
@@ -136,7 +138,7 @@ const CreateNote = (props: Props) => {
               </Select>
             </Form.Item>
 
-            <Form.Item label="Tags" name="tags">
+            <Form.Item<FieldType> label="Tags" name="tags">
               <Select
                 mode="tags"
                 style={{ width: "100%" }}
@@ -145,7 +147,7 @@ const CreateNote = (props: Props) => {
               ></Select>
             </Form.Item>
 
-            <Form.Item label="content" name="content">
+            <Form.Item<FieldType> label="content" name="content">
               <RichTextEditor />
             </Form.Item>
 
