@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Button, Form, Input, Select } from "antd";
+import { Button, Form, Input, Select, Spin } from "antd";
 import dynamic from "next/dynamic";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux-hooks";
 import { authSelector } from "@/store/slices/authSlice";
@@ -127,56 +127,62 @@ const EditNote = (props: Props) => {
   return (
     <>
       <h2 className="text-2xl font-bold mb-2">Edit Note</h2>
-      <Form
-        name="basic"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        style={{ maxWidth: 600 }}
-        initialValues={initialValues}
-        onFinish={onFinish}
-        autoComplete="off"
-      >
-        <Form.Item<FieldType>
-          label="Title"
-          name="title"
-          rules={[{ required: true, message: "Please input your username!" }]}
+
+      {noteReducer.status === "loading" ||
+      noteReducer.note?.user == undefined ? (
+        <Spin />
+      ) : (
+        <Form
+          name="basic"
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 16 }}
+          style={{ maxWidth: 600 }}
+          initialValues={initialValues}
+          onFinish={onFinish}
+          autoComplete="off"
         >
-          <Input />
-        </Form.Item>
+          <Form.Item<FieldType>
+            label="Title"
+            name="title"
+            rules={[{ required: true, message: "Please input your username!" }]}
+          >
+            <Input />
+          </Form.Item>
 
-        <Form.Item<FieldType>
-          label="CategoryType"
-          name="category"
-          rules={[{ required: true, message: "Please select an option!" }]}
-        >
-          <Select>
-            <Select.Option value="WORK">Work</Select.Option>
-            <Select.Option value="PERSONAL">Personal</Select.Option>
-            <Select.Option value="OTHERS">Others</Select.Option>
-          </Select>
-        </Form.Item>
+          <Form.Item<FieldType>
+            label="CategoryType"
+            name="category"
+            rules={[{ required: true, message: "Please select an option!" }]}
+          >
+            <Select>
+              <Select.Option value="WORK">Work</Select.Option>
+              <Select.Option value="PERSONAL">Personal</Select.Option>
+              <Select.Option value="OTHERS">Others</Select.Option>
+            </Select>
+          </Form.Item>
 
-        <Form.Item<FieldType> label="Tags" name="tags">
-          <Select
-            mode="tags"
-            style={{ width: "100%" }}
-            placeholder="Tags Mode"
-            options={initOptions}
-            // value={userTags}
-            onChange={handleTagInputChange}
-          ></Select>
-        </Form.Item>
+          <Form.Item<FieldType> label="Tags" name="tags">
+            <Select
+              mode="tags"
+              style={{ width: "100%" }}
+              placeholder="Tags Mode"
+              options={initOptions}
+              // value={userTags}
+              onChange={handleTagInputChange}
+            ></Select>
+          </Form.Item>
 
-        <Form.Item<FieldType> label="content" name="content">
-          <RichTextEditor initialValue={initialValues.content} />
-        </Form.Item>
+          <Form.Item<FieldType> label="content" name="content">
+            <RichTextEditor initialValue={initialValues.content} />
+          </Form.Item>
 
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-        </Form.Item>
-      </Form>
+          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+            <Button type="primary" htmlType="submit">
+              Submit
+            </Button>
+          </Form.Item>
+        </Form>
+      )}
     </>
   );
 };

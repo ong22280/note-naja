@@ -1,9 +1,6 @@
 import React from 'react'
 import HomeSidebar from '../home/HomeSidebar';
-
 import HomeHeader from '../home/HomeHeader';
-
-type Props = {}
 
 const HomeLayout = ({ children }: { children: React.ReactNode }) => {
   return (

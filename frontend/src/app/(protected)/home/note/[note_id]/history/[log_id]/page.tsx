@@ -3,11 +3,10 @@
 import { useAppDispatch, useAppSelector } from "@/hooks/redux-hooks";
 import { getLogById, logSelector } from "@/store/slices/logSlice";
 import { getNoteById, noteSelector } from "@/store/slices/noteSlice";
-import { LogType } from "@/types/logTypes";
-import { formattedDate, formattedDateTime } from "@/utils/dateFormat";
-import { Avatar, Button, Tag, Timeline } from "antd";
+import { formattedDateTime } from "@/utils/dateFormat";
+import { Avatar, Button, Spin, Tag, Timeline } from "antd";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 type Props = {
   params: { log_id: string; note_id: string };
@@ -59,7 +58,7 @@ const HistoryNote = (props: Props) => {
       noteReducer.note?.user == undefined ||
       logReducer.status === "loading" ||
       logReducer.log == undefined ? (
-        <p>Loading...</p>
+        <Spin />
       ) : (
         <div>
           <div className="flex justify-between">
@@ -107,6 +106,7 @@ const HistoryNote = (props: Props) => {
 
             {/* --- Timeline --- */}
             <div className="col-span-4">
+              <h3 className="text-lg font-bold mb-4">History</h3>
               {noteReducer.note?.logs.length > 0 && (
                 <Timeline>
                   {noteReducer.note.logs.map((log) => {

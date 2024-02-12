@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Pagination, Select, Empty } from "antd";
+import { Button, Pagination, Select, Empty, Skeleton, Spin } from "antd";
 import { getAllNotes, noteSelector } from "@/store/slices/noteSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux-hooks";
 import Note from "./note";
@@ -76,7 +76,7 @@ const NoteList = (props: Props) => {
       };
       fetchNotes();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
   // console.log(noteReducer.notes);
@@ -143,46 +143,50 @@ const NoteList = (props: Props) => {
         emptyCategoryRender}
 
       {/* Note List */}
-      <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {filteredNotes ? (
-          filteredNotes
-            .sort((a, b) => {
-              if (sortingOption === "newest") {
-                return (
-                  new Date(b.createdAt).getTime() -
-                  new Date(a.createdAt).getTime()
-                );
-              } else {
-                return (
-                  new Date(a.createdAt).getTime() -
-                  new Date(b.createdAt).getTime()
-                );
-              }
-            })
-            .slice(indexOfFirstNote, indexOfLastNote)
-            .map((note, index) => (
-              <Note
-                key={index}
-                title={note.title}
-                content={note.content}
-                id={note.id}
-                createdAt={note.createdAt}
-                updatedAt={note.updatedAt}
-                user={{
-                  id: note.user.id,
-                  name: note.user.name,
-                  email: note.user.email,
-                  avatar: note.user.avatar,
-                }}
-                logs={note.logs}
-                category={note.category}
-                tags={note.tags}
-              />
-            ))
-        ) : (
-          <Empty />
-        )}
-      </div>
+      {noteReducer.status === "loading" ? (
+        <Spin />
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {filteredNotes ? (
+            filteredNotes
+              .sort((a, b) => {
+                if (sortingOption === "newest") {
+                  return (
+                    new Date(b.createdAt).getTime() -
+                    new Date(a.createdAt).getTime()
+                  );
+                } else {
+                  return (
+                    new Date(a.createdAt).getTime() -
+                    new Date(b.createdAt).getTime()
+                  );
+                }
+              })
+              .slice(indexOfFirstNote, indexOfLastNote)
+              .map((note, index) => (
+                <Note
+                  key={index}
+                  title={note.title}
+                  content={note.content}
+                  id={note.id}
+                  createdAt={note.createdAt}
+                  updatedAt={note.updatedAt}
+                  user={{
+                    id: note.user.id,
+                    name: note.user.name,
+                    email: note.user.email,
+                    avatar: note.user.avatar,
+                  }}
+                  logs={note.logs}
+                  category={note.category}
+                  tags={note.tags}
+                />
+              ))
+          ) : (
+            <Empty />
+          )}
+        </div>
+      )}
 
       {/* Pagination */}
       <div className="bottom-0 w-full flex justify-center mb-8 fixed">

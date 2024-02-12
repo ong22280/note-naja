@@ -6,6 +6,8 @@ import { useAppDispatch } from "../hooks/redux-hooks";
 import React from "react";
 
 const NotificationBar = () => {
+
+  // --- Redux ---
   const dispatch = useAppDispatch();
   const { open, message, type } = useAppSelector((state) => state.notification);
 

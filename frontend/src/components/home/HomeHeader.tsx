@@ -2,13 +2,12 @@
 
 import { authSelector, logout } from "@/store/slices/authSlice";
 import { showNotification } from "@/store/slices/notificationSlice";
-import { Avatar, Button, Popover } from "antd";
+import { Avatar, Button, Popover, Spin } from "antd";
 import Search from "@/components/home/Search";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NotificationType } from "@/types/notificationType";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 
 type Props = {};
 
@@ -17,9 +16,6 @@ const HomeHeader = (props: Props) => {
   const dispatch = useDispatch();
   const authReducer = useSelector(authSelector);
   const { userInfo, status, error } = authReducer;
-
-  // --- Avatar ---
-  
 
   // --- Router ---
   const navigate = useRouter();
@@ -44,7 +40,6 @@ const HomeHeader = (props: Props) => {
 
   const content = (
     <div className="flex flex-col">
-      {/* <Button type="text">Profile</Button> */}
       <Button onClick={handleLogout}>Logout</Button>
     </div>
   );
@@ -54,18 +49,27 @@ const HomeHeader = (props: Props) => {
       <div className="container mx-auto px-4  items-center">
         <div className="flex items-center justify-between">
           <Search />
-          <div className="flex items-center gap-4">
-            <h3 className="text-xl font-bold">{userInfo?.name}</h3>
-            <Popover content={content} title={userInfo?.email} trigger="click">
-              <Avatar
-                size={32}
-                src={
-                  userInfo?.avatar ||
-                  "https://api.dicebear.com/7.x/miniavs/svg?seed=1"
-                }
-              />
-            </Popover>
-          </div>
+
+          {status === "loading" ? (
+            <Spin />
+          ) : (
+            <div className="flex items-center gap-4">
+              <h3 className="text-xl font-bold">{userInfo?.name}</h3>
+              <Popover
+                content={content}
+                title={userInfo?.email}
+                trigger="click"
+              >
+                <Avatar
+                  size={32}
+                  src={
+                    userInfo?.avatar ||
+                    "https://api.dicebear.com/7.x/miniavs/svg?seed=1"
+                  }
+                />
+              </Popover>
+            </div>
+          )}
         </div>
       </div>
     </header>

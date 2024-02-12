@@ -19,12 +19,6 @@ const Search = (props: Props) => {
 
   // --- State ---
   const [options, setOptions] = useState<{ value: string }[]>([]);
-  // const getPanelValue = (searchText: string) =>
-  //   !searchText
-  //     ? []
-  //     : notes
-  //         ?.filter((note) => note.title.includes(searchText))
-  //         .map((note) => ({ value: note.title, key: note.id }));
 
   const getPanelValue = (searchText: string) => {
     if (!searchText) {

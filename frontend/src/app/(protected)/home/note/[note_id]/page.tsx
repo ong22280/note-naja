@@ -2,10 +2,13 @@
 
 import { useAppDispatch, useAppSelector } from "@/hooks/redux-hooks";
 import { authSelector } from "@/store/slices/authSlice";
-import { logSelector } from "@/store/slices/logSlice";
-import { deleteNote, getNoteById, noteSelector } from "@/store/slices/noteSlice";
+import {
+  deleteNote,
+  getNoteById,
+  noteSelector,
+} from "@/store/slices/noteSlice";
 import { formattedDate, formattedDateTime } from "@/utils/dateFormat";
-import { Avatar, Button, message, Popconfirm, Tag, Timeline } from "antd";
+import { Avatar, Button, message, Popconfirm, Spin, Tag, Timeline } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
@@ -55,7 +58,6 @@ const Note = (props: Props) => {
   };
 
   const handleDeleteNote = async () => {
-    console.log("Delete Note");
     const id = parseInt(note_id);
     const actionResult = await dispatch(deleteNote(id));
     if (deleteNote.fulfilled.match(actionResult)) {
@@ -64,7 +66,6 @@ const Note = (props: Props) => {
     } else {
       message.error("Failed to delete the note");
     }
-
   };
 
   console.log(noteReducer.note);
@@ -73,7 +74,7 @@ const Note = (props: Props) => {
     <>
       {noteReducer.status === "loading" ||
       noteReducer.note?.user == undefined ? (
-        <p>Loading...</p>
+        <Spin />
       ) : (
         <div>
           <div className="flex justify-between">
@@ -128,6 +129,7 @@ const Note = (props: Props) => {
 
             {/* --- Timeline --- */}
             <div className="col-span-4">
+              <h3 className="text-lg font-bold mb-4">History</h3>
               {noteReducer.note?.logs.length > 0 && (
                 <Timeline>
                   {noteReducer.note.logs.map((log) => {
