@@ -1,7 +1,7 @@
 # Note Naja
 
 credit code reference:
-  - redux toolkit authentication: https://www.youtube.com/watch?v=Kd5H6qf3y4Y
+  - redux toolkit authentication: https://blog.stackademic.com/manage-your-react-typescript-application-state-using-redux-toolkit-926d3b4abaa7
   - redux toolkit section and dispatch: https://redux.js.org/tutorials/essentials/part-5-async-logic
   - google auth: https://medium.com/@dhananjay_71533/implementing-google-authentication-with-react-js-and-node-js-f72e306f26c9
   - solve problem by: **chatGPT**
