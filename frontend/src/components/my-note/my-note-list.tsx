@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Button, Pagination, Select, Empty, Spin } from "antd";
 import { useAppSelector } from "@/hooks/redux-hooks";
-import Note from "../note/note";
+import Note from "./note";
 import { CategoryEnumType } from "@/types/categoryTypes";
 import Link from "next/link";
 import { authSelector } from "@/store/slices/authSlice";
