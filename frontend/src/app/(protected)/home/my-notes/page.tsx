@@ -16,7 +16,7 @@ const MyNote = (props: Props) => {
         </div>
         <div>
           <Button type="primary">
-            <Link href="home/note/create">Create Note</Link>
+            <Link href="note/create">Create Note</Link>
           </Button>
         </div>
       </div>

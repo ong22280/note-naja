@@ -1,19 +1,30 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Pagination, Select, Empty, Spin } from "antd";
-import { useAppSelector } from "@/hooks/redux-hooks";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux-hooks";
 import Note from "./note";
 import { CategoryEnumType } from "@/types/categoryTypes";
 import Link from "next/link";
-import { authSelector } from "@/store/slices/authSlice";
+import { authSelector, getUser } from "@/store/slices/authSlice";
 
 type Props = {};
 
 const MyNoteList = (props: Props) => {
   // --- Redux ---
+  const dispatch = useAppDispatch();
   const authReducer = useAppSelector(authSelector);
   const { userInfo } = authReducer;
+
+  // --- Fetching Data ---
+  useEffect(() => {
+    if (authReducer.status === "idle") {
+      const fetchUser = async () => {
+        await dispatch(getUser());
+      };
+      fetchUser();
+    }
+  }, []);
 
   // --- CategoryType ---
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
