@@ -13,18 +13,6 @@ const NoteList = (props: Props) => {
   const dispatch = useAppDispatch();
   const noteReducer = useAppSelector(noteSelector);
 
-  // --- Pagination ---
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const pageSize = 8;
-  const totalNotes = noteReducer?.notes?.length;
-
-  const indexOfLastNote = currentPage * pageSize;
-  const indexOfFirstNote = indexOfLastNote - pageSize;
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
   // --- CategoryType ---
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const allNumberCategory = noteReducer?.notes?.length;
@@ -52,6 +40,10 @@ const NoteList = (props: Props) => {
     </div>
   );
 
+  // --- Pagination ---
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const pageSize = 8;
+
   // Filtered notes
   const filteredNotes = noteReducer?.notes?.filter((note) => {
     if (selectedCategory === "all") {
@@ -60,6 +52,15 @@ const NoteList = (props: Props) => {
       return note.category === selectedCategory;
     }
   });
+
+  const totalNotes = filteredNotes ? filteredNotes.length : 0;
+
+  const indexOfLastNote = currentPage * pageSize;
+  const indexOfFirstNote = indexOfLastNote - pageSize;
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   // --- Sorting ---
   const [sortingOption, setSortingOption] = useState<string>("newest");

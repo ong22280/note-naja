@@ -1,6 +1,6 @@
 "use client";
 
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { Button, Pagination, Select, Empty, Spin } from "antd";
 import { useAppSelector } from "@/hooks/redux-hooks";
 import Note from "../note/note";
@@ -14,18 +14,6 @@ const MyNoteList = (props: Props) => {
   // --- Redux ---
   const authReducer = useAppSelector(authSelector);
   const { userInfo } = authReducer;
-
-  // --- Pagination ---
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const pageSize = 8;
-  const totalNotes = userInfo?.notes?.length;
-
-  const indexOfLastNote = currentPage * pageSize;
-  const indexOfFirstNote = indexOfLastNote - pageSize;
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
 
   // --- CategoryType ---
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
@@ -54,6 +42,10 @@ const MyNoteList = (props: Props) => {
     </div>
   );
 
+  // --- Pagination ---
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const pageSize = 8;
+
   // Filtered notes
   const filteredNotes = userInfo?.notes?.filter((note) => {
     if (selectedCategory === "all") {
@@ -62,6 +54,15 @@ const MyNoteList = (props: Props) => {
       return note.category === selectedCategory;
     }
   });
+
+  const totalNotes = filteredNotes?.length;
+
+  const indexOfLastNote = currentPage * pageSize;
+  const indexOfFirstNote = indexOfLastNote - pageSize;
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   // --- Sorting ---
   const [sortingOption, setSortingOption] = useState<string>("newest");
