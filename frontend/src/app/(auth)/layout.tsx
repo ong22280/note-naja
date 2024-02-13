@@ -3,7 +3,7 @@ import React from "react";
 
 const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="bg-gradient-to-br from-slate-800 to-blue-900 h-screen pt-52">
+    <div className="bg-gradient-to-br from-slate-800 to-blue-900 h-screen">
       {children}
     </div>
   );

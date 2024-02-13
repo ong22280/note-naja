@@ -98,8 +98,8 @@ const Signup = () => {
   };
 
   return (
-    <div className="max-w-xs mx-auto">
-      <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+    <div className="flex justify-center items-center h-screen">
+      <div className="max-w-md w-full bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <div className="mb-4">
           <div className="flex items-center justify-center">
             <h1 className="text-center text-xl font-bold  text-black">
