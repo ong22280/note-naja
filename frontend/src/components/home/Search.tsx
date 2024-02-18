@@ -29,14 +29,13 @@ const Search = (props: Props) => {
       const search = searchText.toLowerCase();
       return title.includes(search);
     });
-    const optionsSet: { value: string; key: number }[] = [];
+    const optionsSet: { value: string }[] = [];
     if (!filteredNotes) {
       return optionsSet;
     } else {
       for (let i = 0; i < filteredNotes.length; i++) {
         optionsSet.push({
           value: filteredNotes[i].title,
-          key: filteredNotes[i].id,
         });
       }
     }
@@ -58,8 +57,7 @@ const Search = (props: Props) => {
       fetchNotes();
     }
     if (notes != undefined && notes?.length >= 1 && status === "idle") {
-      let optionsSet: { value: string }[];
-      optionsSet = [];
+      let optionsSet: { value: string }[] = [];
       for (let i = 0; i < notes.length; i++) {
         optionsSet.push({ value: notes[i].title });
       }

@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/redux-hooks";
 import Note from "./note";
 import { CategoryEnumType } from "@/types/categoryTypes";
 import Link from "next/link";
+import { NoteType } from "@/types/noteTypes";
 
 type Props = {};
 
@@ -12,6 +13,17 @@ const NoteList = (props: Props) => {
   // --- Redux ---
   const dispatch = useAppDispatch();
   const noteReducer = useAppSelector(noteSelector);
+
+  // --- Fetch notes ---
+  useEffect(() => {
+    if (noteReducer.status === "idle") {
+      const fetchNotes = async () => {
+        await dispatch(getAllNotes());
+      };
+      fetchNotes();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
 
   // --- CategoryType ---
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
@@ -40,11 +52,7 @@ const NoteList = (props: Props) => {
     </div>
   );
 
-  // --- Pagination ---
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const pageSize = 8;
-
-  // Filtered notes
+  // --- Filtered Note By Category ---
   const filteredNotes = noteReducer?.notes?.filter((note) => {
     if (selectedCategory === "all") {
       return true;
@@ -53,32 +61,42 @@ const NoteList = (props: Props) => {
     }
   });
 
-  const totalNotes = filteredNotes ? filteredNotes.length : 0;
-
-  const indexOfLastNote = currentPage * pageSize;
-  const indexOfFirstNote = indexOfLastNote - pageSize;
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
   // --- Sorting ---
   const [sortingOption, setSortingOption] = useState<string>("newest");
-
   const handleChange = (value: string) => {
     setSortingOption(value);
   };
 
-  // --- Fetch notes ---
-  useEffect(() => {
-    if (noteReducer.status === "idle") {
-      const fetchNotes = async () => {
-        await dispatch(getAllNotes());
-      };
-      fetchNotes();
+  const filteredSortedNotes = filteredNotes?.sort(
+    (a: NoteType, b: NoteType) => {
+      if (sortingOption === "newest") {
+        return (
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+      } else {
+        return (
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        );
+      }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch]);
+  );
+
+  // --- Pagination ---
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const pageSize = 8;
+  const indexOfLastNote = currentPage * pageSize;
+  const indexOfFirstNote = indexOfLastNote - pageSize;
+
+  const filteredSortedSlicedNotes = filteredSortedNotes?.slice(
+    indexOfFirstNote,
+    indexOfLastNote
+  );
+
+  const totalNotes = filteredNotes ? filteredNotes.length : 0;
 
   // console.log(noteReducer.notes);
 
@@ -148,41 +166,26 @@ const NoteList = (props: Props) => {
         <Spin />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {filteredNotes ? (
-            filteredNotes
-              .sort((a, b) => {
-                if (sortingOption === "newest") {
-                  return (
-                    new Date(b.createdAt).getTime() -
-                    new Date(a.createdAt).getTime()
-                  );
-                } else {
-                  return (
-                    new Date(a.createdAt).getTime() -
-                    new Date(b.createdAt).getTime()
-                  );
-                }
-              })
-              .slice(indexOfFirstNote, indexOfLastNote)
-              .map((note, index) => (
-                <Note
-                  key={index}
-                  title={note.title}
-                  content={note.content}
-                  id={note.id}
-                  createdAt={note.createdAt}
-                  updatedAt={note.updatedAt}
-                  user={{
-                    id: note.user.id,
-                    name: note.user.name,
-                    email: note.user.email,
-                    avatar: note.user.avatar,
-                  }}
-                  logs={note.logs}
-                  category={note.category}
-                  tags={note.tags}
-                />
-              ))
+          {filteredSortedSlicedNotes ? (
+            filteredSortedSlicedNotes.map((note, index) => (
+              <Note
+                key={index}
+                title={note.title}
+                content={note.content}
+                id={note.id}
+                createdAt={note.createdAt}
+                updatedAt={note.updatedAt}
+                user={{
+                  id: note.user.id,
+                  name: note.user.name,
+                  email: note.user.email,
+                  avatar: note.user.avatar,
+                }}
+                logs={note.logs}
+                category={note.category}
+                tags={note.tags}
+              />
+            ))
           ) : (
             <Empty />
           )}

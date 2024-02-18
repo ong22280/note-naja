@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import { Button, Form, Input, Select, Spin } from "antd";
-import dynamic from "next/dynamic";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux-hooks";
 import { authSelector } from "@/store/slices/authSlice";
 import {
@@ -15,10 +14,7 @@ import { NotificationType } from "@/types/notificationType";
 import { useRouter } from "next/navigation";
 import { tagSelector } from "@/store/slices/tagSlice";
 import { CategoryEnumType } from "@/types/categoryTypes";
-
-const RichTextEditor = dynamic(() => import("@/components/rich-text-editor"), {
-  ssr: false,
-});
+import RichTextEditor from "@/components/rich-text-editor";
 
 type FieldType = {
   title: string;
@@ -167,7 +163,6 @@ const EditNote = (props: Props) => {
               style={{ width: "100%" }}
               placeholder="Tags Mode"
               options={initOptions}
-              // value={userTags}
               onChange={handleTagInputChange}
             ></Select>
           </Form.Item>

@@ -13,20 +13,6 @@ import favoriteRouter from "./routes/favoriteRouter";
 
 dotenv.config();
 
-interface UserBasicInfo {
-  id: number;
-  name: string;
-  email: string;
-}
-
-declare global {
-  namespace Express {
-    interface Request {
-      user?: UserBasicInfo | null;
-    }
-  }
-}
-
 const app = express();
 const port = process.env.PORT || 8000;
 
@@ -41,8 +27,8 @@ app.use(
   express.static("../uploads")
 )
 
-app.use(bodyParser.json()); // To recognize the req obj as a json obj
-app.use(bodyParser.urlencoded({ extended: true })); // To recognize the req obj as strings or arrays. extended true to handle nested objects also
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

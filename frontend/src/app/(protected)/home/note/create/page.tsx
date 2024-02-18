@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import { Button, Form, Input, Select } from "antd";
-import dynamic from "next/dynamic";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux-hooks";
 import { authSelector } from "@/store/slices/authSlice";
 import { createNote } from "@/store/slices/noteSlice";
@@ -11,10 +10,7 @@ import { NotificationType } from "@/types/notificationType";
 import { useRouter } from "next/navigation";
 import { CategoryEnumType } from "@/types/categoryTypes";
 import { tagSelector, getAllTags } from "@/store/slices/tagSlice";
-
-const RichTextEditor = dynamic(() => import("@/components/rich-text-editor"), {
-  ssr: false,
-});
+import RichTextEditor from "@/components/rich-text-editor";
 
 type FieldType = {
   title: string;
