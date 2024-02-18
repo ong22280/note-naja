@@ -102,7 +102,7 @@ const SettingPage = (props: Props) => {
   return (
     <>
       <h2 className="text-2xl font-bold mb-2">Edit Profile</h2>
-      <div className="ml-48 mb-4">
+      {/* <div className="ml-48 mb-4">
         <div className=" cursor-pointer p-2 border-2 rounded-full w-fit">
           <Upload {...propsUpload} onChange={handleAvatarUpload}>
             <Avatar
@@ -114,7 +114,7 @@ const SettingPage = (props: Props) => {
             />
           </Upload>
         </div>
-      </div>
+      </div> */}
       <Form
         name="basic"
         labelCol={{ span: 8 }}

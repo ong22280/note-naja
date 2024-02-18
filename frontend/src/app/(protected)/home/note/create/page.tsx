@@ -40,15 +40,21 @@ const CreateNote = (props: Props) => {
 
   // --- Fetch Tags ---
   useEffect(() => {
+    const fetchTags = async () => {
+      await dispatch(getAllTags());
+    };
+
     if (tagReducer.status === "idle") {
-      const fetchTags = async () => {
-        await dispatch(getAllTags());
-      };
       fetchTags();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
+
+  // --- Set Tags ---
+  useEffect(() => {
     if (
       tagReducer.tags != undefined &&
-      tagReducer.tags?.length >= 1 &&
+      tagReducer.tags.length >= 1 &&
       tagReducer.status === "idle"
     ) {
       const optionsSet = new Set();
@@ -59,10 +65,10 @@ const CreateNote = (props: Props) => {
         });
       }
       const options: any = Array.from(optionsSet);
+      console.log(options);
       setInitOptions(options);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [tagReducer.tags, tagReducer.status]);
 
   const onFinish = async (values: FieldType) => {
     try {

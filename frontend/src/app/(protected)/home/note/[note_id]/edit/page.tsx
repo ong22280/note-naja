@@ -71,6 +71,11 @@ const EditNote = (props: Props) => {
       };
       fetchNoteById();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // --- Set Tags ---
+  useEffect(() => {
     if (
       tagReducer.tags != undefined &&
       tagReducer.tags?.length >= 1 &&
@@ -84,10 +89,9 @@ const EditNote = (props: Props) => {
         });
       }
       const options: any = Array.from(optionsSet);
-      setInitOptions(options);
+      setInitOptions((prev) => [...prev, ...options]);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [tagReducer.tags, tagReducer.status]);
 
   const onFinish = async (values: any) => {
     try {
