@@ -10,7 +10,12 @@ import { NotificationType } from "@/types/notificationType";
 import { useRouter } from "next/navigation";
 import { CategoryEnumType } from "@/types/categoryTypes";
 import { tagSelector, getAllTags } from "@/store/slices/tagSlice";
-import RichTextEditor from "@/components/rich-text-editor";
+import dynamic from "next/dynamic";
+
+// prevent SSR for the editor when building
+const RichTextEditor = dynamic(() => import("@/components/rich-text-editor"), {
+  ssr: false,
+});
 
 type FieldType = {
   title: string;
